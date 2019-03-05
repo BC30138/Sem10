@@ -68,7 +68,7 @@ LSB - проект по стандартизации дистрибутивов 
 
 А у чотких посанов прибывших будут появляться задания на: скрипты, демон-процессы, серверы.
 
-# Лекция №3 26.02.19
+# Лекция №2 26.02.19
 
 ```
 $ command -x_1 [-x_2 args] {-x_n | --long-options} args ... \n
@@ -206,4 +206,351 @@ $ echo $?
 $ test 7 -le 9
 $ echo $?
 1
+```
+
+# Лекция №3 5.03.19
+## Простейший скрипт
+
+Работа со скриптом:
+
+```sh
+$ ./script.sh John Bill Michael
+$ ./script.sh
+```
+
+Скрипт:
+
+```sh
+#!/bin/bash
+
+echo $0 $1 $2 $3
+
+TEMP=$1
+
+if test -z TEMP
+then 
+    echo Hello World
+else 
+    echo Hello $1
+fi
+```
+
+```sh
+#!/bin/bash
+
+echo $@
+
+if test $# -eq 0
+then 
+    echo Hello World
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```sh
+#!/bin/bash
+
+if [ $# -eq 0 ]
+then 
+    echo Hello World
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```sh
+#!/bin/bash
+
+if test $# -eq 0
+then 
+    echo Hello World
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```sh
+#!/bin/bash
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```sh
+#!/bin/bash
+
+j=0
+
+while test $j -lt 100
+do 
+    echo $j
+    j=$((j + 1))
+    # j=$(($j + 1))
+done
+exit
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```
+$ ./script.sh -h
+$ ./script.sh --help
+$ ./script.sh -a
+$ ./script.sh -l
+$ ./script.sh -abc
+```
+
+```sh
+#!/bin/bash
+
+case $1 in
+    -h|--help) echo Usage $0 enter list with names
+    -[la]) echo $1 typed
+    *) echo Unknown parameter $1
+
+exit
+
+j=0
+
+while test $j -lt 100
+do 
+    echo $j
+    j=$((j + 1))
+    # j=$(($j + 1))
+done
+exit
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```bash
+$ ./script.sh A B C
+```
+
+
+```bash
+#!/bin/bash
+
+echo $1 $2
+
+shift
+
+echo $1 $2
+
+exit
+
+function get_help() 
+{
+    case $1 in
+        -h|--help) echo Usage $0 enter list with names
+        -[la]) echo $1 typed
+        *) echo Unknown parameter $1
+}
+
+get_help() $@
+
+exit
+
+j=0
+
+while test $j -lt 100
+do 
+    echo $j
+    j=$((j + 1))
+    # j=$(($j + 1))
+done
+exit
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+Теперь что-то в терминале:
+```sh
+$ mkdir 1 2 3 4 5 6 7
+```
+
+```bash
+#!/bin/bash
+
+RESULT=`find . -type d`
+
+for i in $RESULT
+do
+    echo Found $i
+done
+
+exit 
+
+echo $1 $2
+
+shift
+
+echo $1 $2
+
+exit
+
+function get_help() 
+{
+    case $1 in
+        -h|--help) echo Usage $0 enter list with names
+        -[la]) echo $1 typed
+        *) echo Unknown parameter $1
+}
+
+get_help() $@
+
+exit
+
+j=0
+
+while test $j -lt 100
+do 
+    echo $j
+    j=$((j + 1))
+    # j=$(($j + 1))
+done
+exit
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
+```
+
+```sh
+$ mkdir "666\ 999"
+$ ./script.sh
+```
+
+Решение проблемы:
+
+```bash
+#!/bin/bash
+
+IFS=$'\n'
+
+RESULT=`find . -type d`
+
+for i in $RESULT
+do
+    echo Found $i
+done
+
+exit 
+
+echo $1 $2
+
+shift
+
+echo $1 $2
+
+exit
+
+function get_help() 
+{
+    case $1 in
+        -h|--help) echo Usage $0 enter list with names
+        -[la]) echo $1 typed
+        *) echo Unknown parameter $1
+}
+
+get_help() $@
+
+exit
+
+j=0
+
+while test $j -lt 100
+do 
+    echo $j
+    j=$((j + 1))
+    # j=$(($j + 1))
+done
+exit
+
+NAMES="Petr Nikolay Vasiliy"
+
+if test $# -eq 0
+then 
+    for it in $NAMES
+    do
+        echo Hello $it
+    done
+else 
+    for it in $@
+    do
+        echo Hello $it
+    done
+fi
 ```
