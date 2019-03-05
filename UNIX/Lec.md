@@ -554,3 +554,8 @@ else
     done
 fi
 ```
+
+## Для задания №1
+```sh
+date -r `stat -s 'script.command' | awk '{print $11;}' | tr -dc '0-9'`
+```
