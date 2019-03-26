@@ -36,4 +36,122 @@ if (resultReady) takeDesision(result);
 
 Happens before - в JMM введена данная абстракция. Она означает, что если операция X связана отношением happens-before с Y, то обязательно выполнится сначала X, потом Y. (Используются мониторы)
 
-В лекции приведен список операций happens-before, который необходимо понять для хорошего параллельного программирования. 
+В лекции приведен список операций happens-before, который необходимо понять для хорошего параллельного программирования.
+
+# Лекция №3 19.03.19
+Классификация Флинна, закон Амдала и пр. надо вспомнить.
+
+Разделяемая (одна память - много процессоров) и распределенная память (для каждого процессора своя память) .
+
+Кластер - это набор независимых вычислителей, объединенных в одну систему.
+
+Сетевые топологии. 
+
+- Bandwidth, 
+- latency, 
+- diameter of network, 
+- on bisecting the network.
+  - bisection width
+  - bisection bandwidth
+
+Существует множество топологий: шины, ольца, тор, гиперкубы, деревья и т.д.
+
+Самое популярное ныне - Fat Tree (толстое дерево). Как правило 2 узла к одному каналу связи.
+
+### Работа с СКЦ.
+
+Существуют разные планировщики для СК. 
+
+Алгоритм работы с суперкомпьютером: 
+-  получить логин и ключ у администратора.
+-  начать удаленную сессию
+-  scp чтобы загружать и выгружать данные
+
+когда мы ставим свою задачу начинает работу планировщик задач.
+
+[Регистрация пользователя в СКЦ](http://scc.spbstu.ru/index.php/for-users/registration)
+
+```bash
+$ sinfo # узнать о очередях
+$ salloc -N 1 -p tornado-K40 -A sccg1 # получить в пользование 1 узел. sccg1 - это группа
+$ squeue # узнать, что нам выделено
+$ srun -N 1 -p tornado-K40 -A sccg1 <команда/скрипт> # он пробовал ls. не до конца ясно 
+$ sbatch -N 2 -p tornado-K40 -A sccg1 script.sh # поставить в очередь задачу
+```
+
+если требуется специфические библиотеки, версии компиляторов и т.д.
+
+надо использовать команду для подгрузки софта, которые есть в директории */opt/software/*. script.sh:
+```bash
+#!/bin/bash
+
+module purge # очистить загруженные модули
+module load python/3.6.5 # подключаем модуль
+python --version # проверка
+
+```
+
+основные команды: srun, scancel, sinfo, sbatch ... 
+
+### pthreads
+
+это один из стандартов posix.
+
+это малость не то, но попытка переписать данный код: 
+
+____
+hello_world.c
+```cpp
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+void *say_hi(void *arg)
+
+int main(int argc, char* argv[] ) {
+    printf("how many threads?");
+    int n; scanf("%d", &n);
+    {
+       pthread_t t[n];
+       pthread_attr_t a;
+       int i,id[n];
+       printf("creating %d threads", n);
+       for (i = 0; i < n; i++){
+            id[i] = i;
+            pthread_attr_init(&a);
+            pthread_create(&t[i],&a,say_hi,(void*)&i);
+            // pthread_create(&t[i],&a,say_hi,(void*)&id[i]);
+       }
+       printf("waiting for threads to return ...\n");
+       for(i = 0; i < n; i++) pthread_join(t[i],NULL);
+    }
+    return 0;
+}
+
+void *say_hi(void *arg) {
+    int *i = (int*) arg;
+    printf("hello world from thread %d!\n", *i);
+    return NULL;
+}
+```
+
+```bash 
+gcc -l pthread hello_world.c
+```
+
+### Mutex
+
+initialization:
+```cpp
+pthread_mutex_t L = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_lock(&L); // request a lock
+pthtrad_mutex_unlock(&L); // release the lock
+```
+
+```bash
+$ module load compiler/intel/2017.5.239
+$ icc -l pthread hello_world.c
+```
+
+В качестве задания со * - Dining philosopher.
+
