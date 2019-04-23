@@ -155,3 +155,121 @@ $ icc -l pthread hello_world.c
 
 В качестве задания со * - Dining philosopher.
 
+ # Лекция №4 26.03.2019
+
+ ### MPI (Message Passing Interface)
+
+Дома: попробовать запустить и настроить MPI на двух виртуальных машинах.
+
+[хороший туториал по MPI](mpitutorial.dom)
+
+```cpp
+#include <mpi.h>
+
+int main (int argc, char *argv) {
+    int i, p;
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &p);
+    MPI_Comm_rank(MPI_COMM_WORLD, &i);
+
+    printf("Hello world %d out of %d", i, p);
+
+    MPI_Finalize();
+
+    return 0;
+}
+```
+
+usage:
+```bash
+$ salloc -N -1 -p tornado -A sccg1 
+...
+# подгрузить компиляторы.
+$ mpicc mpi_hello_world.c
+$ mpirun -np 5 a.out 
+```
+
+## Передача int
+
+MPI_Bcast
+```cpp
+int n;
+MPI_Bcast(&n, MPI_INT, 0, MPI_COMM_WORLD);
+```
+
+```cpp
+#include <stdio.h>
+#include <mpi.h>
+
+void manager(int *n); // (scanf printf)
+void worker(int i, int n); // -||- просто разные функции
+
+int main (int argc, char *argv) {
+    int myid, np, n;
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &np);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+
+    if (myid == 0) manager(&n);
+
+    MPI_Bcast(&n, MPI_INT, 0, MPI_COMM_WORLD);
+    // MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    if (myid != 0) worker(myid,n);
+
+    MPI_Finalize();
+
+    return 0;
+}
+
+void manager(int *n) {
+    printf("Type \n");
+    scanf("%d", n);
+}
+
+void worker(int i, int n) {
+    printf("Node %d writes %d", i, n)
+}
+```
+
+Почему-то не сработало:
+```cpp
+#include <stdio.h>
+#include <mpi.h>
+
+void manager(int *n); // (scanf printf)
+void worker(int i, int n); // -||- просто разные функции
+
+#define BOSS 2
+
+int main (int argc, char *argv) {
+    int myid, np, n;
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &np);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myid);
+
+    if (myid == BOSS) manager(&n);
+
+    MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    if (myid != BOSS) worker(myid,n);
+
+    MPI_Finalize();
+
+    return 0;
+}
+
+void manager(int *n) {
+    printf("Type \n");
+    scanf("%d", n);
+}
+
+void worker(int i, int n) {
+    printf("Node %d writes %d", i, n)
+}
+```
+
+mpi4py - mpi для питона
