@@ -17,13 +17,6 @@ class NaiveBayesLab:
         # инициализируем множество классов
         self.Y = data_set[:, [-1]].ravel()
 
-    def __init__(self, X, Y):
-        # в случае титаника классы определены в другом столбце, поэтому 
-        # реализация немного другая
-        self.clf = GaussianNB()
-        self.X_train = X
-        self.Y_train = Y
-
     def classification(self, test_train_ratio):
         # разбиваем набор данных на обучающую и тестовую выборку
         self.X_train, self.X_test, self.Y_train, self.Y_test =  train_test_split(self.X, self.Y, test_size=test_train_ratio)
@@ -32,11 +25,6 @@ class NaiveBayesLab:
         # классификация тестовой выборки
         self.Y_result = self.clf.predict(self.X_test)
         self.accuracy = accuracy_score(self.Y_test, self.Y_result)
-
-    def classification(self, X_test, Y_test):
-        self.clf.fit(self.X_train, self.Y_train)
-        self.Y_result = self.clf.predict(X_test)
-        self.accuracy = accuracy_score(Y_test, self.Y_result)
     
     def show_result(self):
         print("Size of train: ", len(self.X_train))
@@ -63,6 +51,9 @@ def spam():
     tools.plot_precision(accuracy_list, 'results/NaiveBayes/spam.png')
 
 def generate_points():
+    data = tools.MLStructure()
+    data_frame = pd.DataFrame()
+
     n = 50
     X_1 = np.random.normal(10, 4, n)
     X_1 = np.append(X_1, np.random.normal(20, 3, n))
@@ -70,30 +61,50 @@ def generate_points():
     X_2 = np.append(X_2, np.random.normal(18, 3, n))
     Y = np.full(n, -1)
     Y = np.append(Y, np.ones(n))
-    data_set = np.column_stack((X_1, X_2))
-    data_set = np.column_stack((data_set, Y))
-    tools.plot_data_set(data_set, 'results/NaiveBayes/generated.png')
 
-    test = NaiveBayesLab(data_set)
-    accuracy_list = tools.get_accuracy_list(test, 0.2, 0.9, 10)
-    tools.plot_precision(accuracy_list, 'results/NaiveBayes/generated_precision.png')
+    data_frame['X_1'] = X_1
+    data_frame['X_2'] = X_2
+    data_frame['Y'] = Y
+    tools.plot_data_set(data_frame, 'X_1', 'X_2', 'Y', 'results/NaiveBayes/generated.png')
 
-    test.classification(0.2)
-    test.show_result()
-    print('Confusion matrix: \n', confusion_matrix(test.Y_test, test.Y_result))
+    x = data_frame.drop('Y', axis=1)
+    y = data_frame['Y'].ravel()
+
+    data.clf = GaussianNB()
+    accuracy_list = tools.get_accuracy_list(data, 0.2, 0.9, 10)
+    # tools.plot_precision(accuracy_list, 'results/NaiveBayes/generated_precision.png')
+
+    # test.classification(0.2)
+    # test.show_result()
+    # print('Confusion matrix: \n', confusion_matrix(test.Y_test, test.Y_result))
     
 def titanic():
-    cat = preprocessing.OneHotEncoder()
-    X_train, Y_train = tools.read_csv_string('data/titanic/train.csv', cat, 1)
-    X_test = tools.read_csv_features('data/titanic/test.csv', cat)
-    Y_test = tools.read_csv_labels('data/titanic/gender_submission.csv', 'Survived')
-    test = NaiveBayesLab(X_train, Y_train)
-    test.classification(X_test, Y_test)
-    accuracy_list = tools.get_accuracy_list(test, 0.2, 0.9, 10)
-    tools.plot_precision(accuracy_list, 'results/NaiveBayes/spam.png')
+    data = tools.MLStructure()
+    train_set = pd.read_csv('data/titanic/train.csv')
+    train_set = tools.titanic_preprocessing(train_set)
+    data.x_train, data.y_train = tools.titanic_get_train_X_Y(train_set)
 
+    x_test_set = pd.read_csv('data/titanic/test.csv')
+    y_test_set = pd.read_csv('data/titanic/gender_submission.csv')
+    data.x_test = tools.titanic_preprocessing(x_test_set)
+    data.y_test = y_test_set['Survived'].ravel()
 
-
+    clf = GaussianNB()
+    clf.fit(data.x_train, data.y_train)
+    data.y_result = clf.predict(data.x_test)
+    tools.show_stat(data)
+    
+def titanic_split():
+    data = tools.MLStructure()
+    data_frame = pd.read_csv('data/titanic/train.csv')
+    data_frame = tools.titanic_preprocessing(data_frame)
+    x, y = tools.titanic_get_train_X_Y(data_frame)
+    data.x_train, data.x_test, data.y_train, data.y_test =  train_test_split(x, y, test_size=0.1)
+    
+    clf = GaussianNB()
+    clf.fit(data.x_train, data.y_train)
+    data.y_result = clf.predict(data.x_test)
+    tools.show_stat(data)
 
 
 
