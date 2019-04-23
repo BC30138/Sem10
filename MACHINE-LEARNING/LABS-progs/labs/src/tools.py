@@ -3,12 +3,12 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-#TODO: x, y in class
 class MLStructure(object):
-    x = None
-    y = None
+    x = None 
+    y = None 
     clf = None
     x_train = None
     y_train = None
@@ -16,34 +16,34 @@ class MLStructure(object):
     y_test = None
     y_result = None
 
-# функция перевода строкового массива элементов выборки в числовой 
-def to_numeric(some_fit, ArrayToEncode):
-    # инциируем средство для перекодировки строк в численный формат
-    le = preprocessing.LabelEncoder()
-    le.fit(some_fit)
-    numeric_array = []
-    for element in ArrayToEncode: 
-        numeric_array.append(le.transform(element))
-    return np.array(numeric_array)
+    def split_data_into_test_train(self, test_ratio):
+        self.x_train, self.x_test, self.y_train, self.y_test =  train_test_split(self.x, self.y, test_size=test_ratio)
 
-def read_string_data(some_fit, path):
-    return to_numeric(some_fit, np.loadtxt(path, dtype='str', delimiter=',')) 
+    def get_accuracy_volume_dependency(self, min_test_ratio, max_test_ratio, step_count):
+        step = (max_test_ratio - min_test_ratio) / step_count
+        accuracy_list = []
+        test_ratio = min_test_ratio
+        while test_ratio <= max_test_ratio:
+            self.split_data_into_test_train(test_ratio)
+            self.classify()
+            accuracy_list.append([1 - test_ratio, accuracy_score(self.y_test, self.y_result)])
+            test_ratio += step
+            test_ratio = round(test_ratio,2)
+        return np.array(accuracy_list)
 
-def get_accuracy_list(data, min_test_ratio, max_test_ratio, step_count):
-    step = (max_test_ratio - min_test_ratio) / step_count
-    accuracy_list = []
-    iterator = min_test_ratio
-    while iterator <= max_test_ratio:
-        data.x_train, data.x_test, data.y_train, data.y_test =  train_test_split(data.x, data.y, test_size=test_train_ratio)
-        data.clf.fit()
-        accuracy_list.append([1 - iterator, clf.accuracy])
-        iterator += step
-        iterator = round(iterator,2)
-    return np.array(accuracy_list)
+    def classify(self):
+        self.clf.fit(self.x_train, self.y_train)
+        self.y_result = self.clf.predict(self.x_test)
+    
+    def show_stat(self):
+        print("Size of train: ", len(self.x_train))
+        print("Size of test: ", len(self.x_test))
+        print("Accuracy: ", accuracy_score(self.y_test, self.y_result))
+        print('Confusion matrix: \n', confusion_matrix(self.y_test, self.y_result))
 
-def plot_precision(points, plot_path):
-    x, y = points.T
-    plt.plot(x, y, marker='o', markerfacecolor='orange', markersize=6, color='skyblue', linewidth=2)
+def plot_precision(accuracy_list, plot_path):
+    test_ratio, accuracy = accuracy_list.T
+    plt.plot(test_ratio, accuracy, marker='o', markerfacecolor='orange', markersize=6, color='skyblue', linewidth=2)
     plt.ylabel('Accuracy score')
     plt.xlabel('Relative volume of trainig sample')
     plt.savefig(plot_path)
@@ -73,16 +73,23 @@ def titanic_preprocessing(input_frame):
     return data_frame
 
 def titanic_get_train_X_Y(input_frame):
-    data_frame = input_frame.copy()
-    Y = data_frame['Survived'].ravel()
-    X = data_frame.drop('Survived', axis=1)
-    return X, Y
+    y = input_frame['Survived']
+    x = input_frame.drop('Survived', axis=1)
+    return x, y
 
-def show_stat(data):
-    print("Size of train: ", len(data.x_train))
-    print("Size of test: ", len(data.x_test))
-    print("Accuracy: ", accuracy_score(data.y_test, data.y_result))
-    print('Confusion matrix: \n', confusion_matrix(data.y_test, data.y_result))
+def spam_get_X_Y(input_frame):
+    y = input_frame[input_frame.columns[len(input_frame.columns) - 1]]
+    x = input_frame.drop(input_frame.columns[len(input_frame.columns) - 1], axis=1)
+    return x, y
+
+def tic_tac_toe_prep_get_X_Y(input_frame):
+    y = input_frame[input_frame.columns[len(input_frame.columns) - 1]]
+    x = input_frame.drop(input_frame.columns[len(input_frame.columns) - 1], axis=1)
+    x = x.replace({'x': 0, 'o': 1, 'b': 2}).astype(int)
+    y = y.map({'positive': 0,'negative': 1}).astype(int)
+    return x, y
+
+
 
 
 

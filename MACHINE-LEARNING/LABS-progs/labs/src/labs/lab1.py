@@ -1,54 +1,34 @@
 import tools
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
 from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-
-class NaiveBayesLab:
-    """Lab 1"""
-    def __init__(self, data_set):
-        # инициируем классификатор
-        self.clf = GaussianNB()
-        # инициализируем множество элементов
-        self.X = data_set[:, range(len(data_set[0]) - 1)]
-        # инициализируем множество классов
-        self.Y = data_set[:, [-1]].ravel()
-
-    def classification(self, test_train_ratio):
-        # разбиваем набор данных на обучающую и тестовую выборку
-        self.X_train, self.X_test, self.Y_train, self.Y_test =  train_test_split(self.X, self.Y, test_size=test_train_ratio)
-        # процесс обучения
-        self.clf.fit(self.X_train, self.Y_train)
-        # классификация тестовой выборки
-        self.Y_result = self.clf.predict(self.X_test)
-        self.accuracy = accuracy_score(self.Y_test, self.Y_result)
-    
-    def show_result(self):
-        print("Size of train: ", len(self.X_train))
-        print("Size of test: ", len(self.X_test))
-        print("Accuracy: ", self.accuracy)
-
 
 def tic_tac_toe():
-    print("Tic_tac_toe.txt")
-    # задаем строки-образцы для перекодировки
-    tic_tac_fit = ['x', 'o', 'b', 'positive','negative']
-    # чтение выборки данных
-    data_set = tools.read_string_data(tic_tac_fit, 'data/Tic_tac_toe.txt')
-    test = NaiveBayesLab(data_set)
-    accuracy_list = tools.get_accuracy_list(test, 0.2, 0.9, 10)
-    tools.plot_precision(accuracy_list, 'results/NaiveBayes/tic_tac_toe.png')
+    data = tools.MLStructure()
+    data_frame = pd.read_csv('data/Tic_tac_toe.txt', header=None)
+    data.x, data.y = tools.tic_tac_toe_prep_get_X_Y(data_frame)
 
+    data.clf = GaussianNB()
+    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    tools.plot_precision(accuracy_list, 'results/NaiveBayes/tic_tac_toe.png')
+    
+    data.split_data_into_test_train(0.2)
+    data.classify()
+    data.show_stat()
 
 def spam():
-    print("Spambase.data")
-    data_set = np.loadtxt('data/spambase.data', delimiter=',')
-    test = NaiveBayesLab(data_set)
-    accuracy_list = tools.get_accuracy_list(test, 0.2, 0.9, 10)
+    data = tools.MLStructure()
+    data_frame = pd.read_csv('data/spambase.data', header=None)
+    data.x, data.y = tools.spam_get_X_Y(data_frame)
+
+    data.clf = GaussianNB()
+
+    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
     tools.plot_precision(accuracy_list, 'results/NaiveBayes/spam.png')
+    
+    data.split_data_into_test_train(0.2)
+    data.classify()
+    data.show_stat()
 
 def generate_points():
     data = tools.MLStructure()
@@ -67,16 +47,17 @@ def generate_points():
     data_frame['Y'] = Y
     tools.plot_data_set(data_frame, 'X_1', 'X_2', 'Y', 'results/NaiveBayes/generated.png')
 
-    x = data_frame.drop('Y', axis=1)
-    y = data_frame['Y'].ravel()
+    data.x = data_frame.drop('Y', axis=1)
+    data.y = data_frame['Y']
 
     data.clf = GaussianNB()
-    accuracy_list = tools.get_accuracy_list(data, 0.2, 0.9, 10)
-    # tools.plot_precision(accuracy_list, 'results/NaiveBayes/generated_precision.png')
 
-    # test.classification(0.2)
-    # test.show_result()
-    # print('Confusion matrix: \n', confusion_matrix(test.Y_test, test.Y_result))
+    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    tools.plot_precision(accuracy_list, 'results/NaiveBayes/generated_precision.png')
+
+    data.split_data_into_test_train(0.2)
+    data.classify()
+    data.show_stat()
     
 def titanic():
     data = tools.MLStructure()
@@ -87,26 +68,21 @@ def titanic():
     x_test_set = pd.read_csv('data/titanic/test.csv')
     y_test_set = pd.read_csv('data/titanic/gender_submission.csv')
     data.x_test = tools.titanic_preprocessing(x_test_set)
-    data.y_test = y_test_set['Survived'].ravel()
+    data.y_test = y_test_set['Survived']
 
-    clf = GaussianNB()
-    clf.fit(data.x_train, data.y_train)
-    data.y_result = clf.predict(data.x_test)
-    tools.show_stat(data)
+    data.clf = GaussianNB()
+
+    data.classify()
+    data.show_stat()
     
 def titanic_split():
     data = tools.MLStructure()
     data_frame = pd.read_csv('data/titanic/train.csv')
     data_frame = tools.titanic_preprocessing(data_frame)
-    x, y = tools.titanic_get_train_X_Y(data_frame)
-    data.x_train, data.x_test, data.y_train, data.y_test =  train_test_split(x, y, test_size=0.1)
-    
-    clf = GaussianNB()
-    clf.fit(data.x_train, data.y_train)
-    data.y_result = clf.predict(data.x_test)
-    tools.show_stat(data)
+    data.x, data.y = tools.titanic_get_train_X_Y(data_frame)
 
+    data.clf = GaussianNB()
 
-
-
-
+    data.split_data_into_test_train(0.1)
+    data.classify()
+    data.show_stat()
