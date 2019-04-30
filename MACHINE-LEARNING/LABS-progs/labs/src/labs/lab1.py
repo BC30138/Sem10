@@ -11,7 +11,7 @@ def tic_tac_toe():
     data.x, data.y = tls.tic_tac_toe_prep_get_x_y(data_frame)
 
     data.clf = GaussianNB()
-    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    accuracy_list = data.get_accuracy_volume_dependency(0.1, 0.8, 10)
     tls.plot_precision(accuracy_list, 'results/NaiveBayes/tic_tac_toe.png')
 
     data.split_data_into_test_train(0.2)
@@ -26,7 +26,7 @@ def spam():
 
     data.clf = GaussianNB()
 
-    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    accuracy_list = data.get_accuracy_volume_dependency(0.1, 0.8, 10)
     tls.plot_precision(accuracy_list, 'results/NaiveBayes/spam.png')
 
     data.split_data_into_test_train(0.2)
@@ -56,7 +56,7 @@ def generate_points():
 
     data.clf = GaussianNB()
 
-    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    accuracy_list = data.get_accuracy_volume_dependency(0.1, 0.8, 10)
     tls.plot_precision(accuracy_list, 'results/NaiveBayes/generated_precision.png')
 
     data.split_data_into_test_train(0.2)
@@ -89,7 +89,7 @@ def titanic_split():
 
     data.clf = GaussianNB()
 
-    accuracy_list = data.get_accuracy_volume_dependency(0.2, 0.9, 10)
+    accuracy_list = data.get_accuracy_volume_dependency(0.1, 0.8, 10)
     tls.plot_precision(accuracy_list, 'results/NaiveBayes/titanic.png')
 
     data.split_data_into_test_train(0.1)
