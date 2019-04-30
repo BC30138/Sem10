@@ -11,7 +11,7 @@
                 "isDefault": true
             },
             "args": [
-                "src/Main.py"
+                "src/main.py"
             ],
             "presentation": {
                 "echo": true,
