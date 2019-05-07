@@ -10,6 +10,7 @@
             "isBuildCommand": true,
             "isShellCommand": true,
             "args": [
+                "-o0",
                 "src/*.c",
                 "src/*.h",
                 "-o",

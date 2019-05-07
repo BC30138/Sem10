@@ -13,6 +13,7 @@
 char * dir_path;
 int recheck_time;
 FILE *config_file;
+char *config_path;
 
 void daemonize_task_2() {
     pid_t process_id, session_id;
@@ -20,7 +21,7 @@ void daemonize_task_2() {
 
     // убедиться, что мы отделились
     if (process_id < 0) exit(EXIT_FAILURE);
-    else exit(EXIT_SUCCESS);
+   // else exit(EXIT_SUCCESS);
 
     umask(0); // изменение файловой маски
 
@@ -48,6 +49,12 @@ void read_config(){
     size_t path_len = 0;
     size_t strtime_len = 0;
 
+    config_file = fopen(config_path, "r");
+    if (config_file == NULL) {
+        syslog(LOG_ERR, "config file not found: path to config should be as argument");
+        exit(EXIT_FAILURE);
+    }
+
     if (getline(&dir_path, &path_len, config_file) == -1) {
         syslog(LOG_ERR, "config file formatting is incorrect");
         exit(EXIT_FAILURE);
@@ -67,6 +74,8 @@ void read_config(){
 
     recheck_time = atoi(strtime);
     strtok(dir_path, "\n");
+
+    fclose(config_file);
 }
 
 void signal_handler(int sig) {
@@ -83,7 +92,7 @@ void signal_handler(int sig) {
     }
 }
 
-void run_task_2() {
+void run_task_2(char *argv[]) {
 
     daemonize_task_2();
 
@@ -92,15 +101,11 @@ void run_task_2() {
     struct dirent *entry;
     struct stat file_stat;
 
-    config_file = fopen("data/daemon_conf.dat", "r");
-    if (config_file == NULL) {
-        syslog(LOG_ERR, "config file not found");
-        exit(EXIT_FAILURE);
-    }
-
+    config_path = argv[1];
     read_config();
+    signal(SIGTERM, signal_handler);
+    signal(SIGHUP, signal_handler);
     while(1){
-        int is_mod = 0;
         dir = opendir(dir_path);
         while ((entry = readdir(dir)) != NULL) {
             if ((strcmp(entry->d_name, ".") != 0)
@@ -112,14 +117,12 @@ void run_task_2() {
                 strcat(file_path, entry->d_name);
                 stat(file_path,  &file_stat);
                 if ((time(NULL) - file_stat.st_mtime) < recheck_time ) {
-                    is_mod = 1;
+                    syslog(LOG_NOTICE,
+                     "content of folder modified in file: %s", entry->d_name);
                 }
             }
         }
         closedir(dir);
-        if (is_mod == 1) {
-            syslog(LOG_NOTICE, "content of %s modified", dir_path);
-        }
         sleep(recheck_time);
     }
 }
