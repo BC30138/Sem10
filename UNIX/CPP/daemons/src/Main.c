@@ -1,5 +1,5 @@
-#include "task2.h"
-// #include <stdio.h>
+#include "tools/tools.h"
+#include "task2/task2.h"
 
 int main(int argc, char *argv[]) {
 

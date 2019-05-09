@@ -9,36 +9,7 @@
 #include <dirent.h> // для работы с файловой системой
 #include <string.h>
 #include <time.h>
-
-void daemonize_() {
-    pid_t process_id, session_id;
-    process_id = fork(); // отделяемся от родительского процесса
-
-    // убедиться, что мы отделились
-    if (process_id < 0) exit(EXIT_FAILURE);
-    else exit(EXIT_SUCCESS);
-
-    umask(0); // изменение файловой маски
-
-    // где-то тут мы открываем логи, журналы и все такое
-
-    session_id = setsid(); // получаем идентификатор сессии
-    if (session_id < 0) {
-        // здесь можно вывести в журнал информацию о сбое
-        exit(EXIT_FAILURE);
-    }
-
-    // изменяем текущий каталог на тот, который точно не удалят и ничего с ним не станет
-    if ((chdir("/")) < 0) { // функция chdir возвращает -1, если что-то пошло не так
-        exit(EXIT_FAILURE);
-    }
-
-    // так как демон не использует терминал, то стандартные файловые дескрипторы излишни
-    // и создают угрозу безопасности
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
-}
+#include "../tools/tools.h"
 
 void signal_handler_example(int sig) {
     switch (sig)
