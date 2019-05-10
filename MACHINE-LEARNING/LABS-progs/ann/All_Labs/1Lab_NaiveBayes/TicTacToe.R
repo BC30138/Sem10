@@ -14,7 +14,7 @@ calculate <- function(x, initial_selection, n, repeats) {
   return(Reduce("+", funcList)/repeats)
 }
 
-A_raw <- read.table("C:/Users/anna_fox/Documents/UNIVERSE/4 курс/2 semester/Нейронные_сети/All_Labs/1Lab/Tic_tac_toe.txt", sep = ",", stringsAsFactors = TRUE)
+A_raw <- read.table("C:/Users/anna_fox/Documents/UNIVERSE/4 пїЅпїЅпїЅпїЅ/2 semester/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ_пїЅпїЅпїЅпїЅ/All_Labs/1Lab/Tic_tac_toe.txt", sep = ",", stringsAsFactors = TRUE)
 n <- dim(A_raw)[1]
 lengthOfSelection <- dim(A_raw)[1]
 
