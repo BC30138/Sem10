@@ -4,6 +4,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
+from sklearn.neighbors import KernelDensity
+from sklearn.metrics.pairwise import polynomial_kernel
 
 class MLStructure(object):
     """Class, which contains all necessary data for data-analysis"""
@@ -37,6 +39,14 @@ class MLStructure(object):
         """Run classification process"""
         self.clf.fit(self.x_train, self.y_train)
         self.y_result = self.clf.predict(self.x_test)
+
+    def my_distance(self, weights):
+        # kde = KernelDensity(kernel="epanechnikov").fit(self.x_train[0])
+        # print(len(self.x_train.index))
+        # result = kde.score_samples(weights[0])
+        result = polynomial_kernel(weights)
+        print(result)
+        return result
 
     def show_stat(self):
         """Show necessary ML stats"""

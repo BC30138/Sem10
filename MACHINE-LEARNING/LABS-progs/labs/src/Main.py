@@ -1,5 +1,6 @@
 """Main launch of lab methods"""
 from labs import lab1
 from labs import lab2
+from labs import lab3
 
-lab2.tic_tac_toe()
+lab3.titanic()
