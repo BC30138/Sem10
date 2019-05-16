@@ -3,9 +3,12 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.externals.six import StringIO
+from sklearn.tree import export_graphviz
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KernelDensity
 from sklearn.metrics.pairwise import polynomial_kernel
+import pydot as pdot
 
 class MLStructure(object):
     """Class, which contains all necessary data for data-analysis"""
@@ -107,4 +110,17 @@ def tic_tac_toe_prep_get_x_y(input_frame):
     x_tab = input_frame.drop(input_frame.columns[len(input_frame.columns) - 1], axis=1)
     x_tab = x_tab.replace({'x': 0, 'o': 1, 'b': 2}).astype(int)
     y_arr = y_arr.map({'positive': 0, 'negative': 1}).astype(int)
+    return x_tab, y_arr
+
+def plot_tree(ml_struct, output_filename):
+    """Plot result tree"""
+    dot_data = StringIO()
+    export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
+                    special_characters=True)
+    graph = pdot.graph_from_dot_data(dot_data.getvalue())
+    graph[0].write_png(output_filename)
+
+def glass_get_x_y(input_frame):
+    y_arr = input_frame[10]
+    x_tab = input_frame.drop([0,10], axis=1)
     return x_tab, y_arr
