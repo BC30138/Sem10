@@ -115,12 +115,14 @@ def tic_tac_toe_prep_get_x_y(input_frame):
 def plot_tree(ml_struct, output_filename):
     """Plot result tree"""
     dot_data = StringIO()
+    classes = list(map(str, ml_struct.clf.classes_))
     export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
-                    special_characters=True)
+                    special_characters=True, class_names=classes, feature_names=list(ml_struct.x_train))
     graph = pdot.graph_from_dot_data(dot_data.getvalue())
     graph[0].write_png(output_filename)
 
 def glass_get_x_y(input_frame):
     y_arr = input_frame[10]
     x_tab = input_frame.drop([0,10], axis=1)
+    x_tab.columns = ["RI", "Na", "Mg", "Al", "Si", "K", "Ca", "Ba", "Fe"]
     return x_tab, y_arr

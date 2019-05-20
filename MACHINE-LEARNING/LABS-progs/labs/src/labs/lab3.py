@@ -28,14 +28,16 @@ def glass():
     """glass dataset"""
     data_frame = pd.read_csv('data/glass.data', header=None)
     data.x_train, data.y_train = tls.glass_get_x_y(data_frame)
+    data.x_test = np.reshape([1.516, 11.7, 1.01, 1.19, 72.59, 0.43, 11.44, 0.02, 0.1], (1, -1))
 
-
-    data.clf = DecisionTreeClassifier(max_depth=32, max_leaf_nodes=15)
-
+    data.clf = DecisionTreeClassifier(max_depth=32, max_leaf_nodes=32)
     data.clf.fit(data.x_train, data.y_train)
-    data.y_result = data.clf.predict(np.reshape([1.516, 11.7, 1.01, 1.19, 72.59, 0.43, 11.44, 0.02, 0.1], (1, -1)))
+    data.y_result = data.clf.predict_proba(data.x_test)
+    print(data.y_result)
+    tls.plot_tree(data, 'results/Tree/glass_tree_full.png')
 
-
-    print(data.y_result) #работает правильно, но возможно нужно идти на r все таки, хотя....
-    # data.show_stat()
-    tls.plot_tree(data, 'results/Tree/glass_tree.png')
+    data.clf = DecisionTreeClassifier(max_depth=4, max_leaf_nodes=17)
+    data.clf.fit(data.x_train, data.y_train)
+    data.y_result = data.clf.predict_proba(data.x_test)
+    print(data.y_result)
+    tls.plot_tree(data, 'results/Tree/glass_tree_opt.png')
