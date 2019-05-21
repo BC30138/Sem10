@@ -10,6 +10,7 @@
 #include <algorithm>
 #include<syslog.h>
 #include<signal.h>
+#include<vector>
 
 #include "../tools/tools.h"
 
@@ -36,6 +37,7 @@ void launch_server() {
     getcwd(path, sizeof(path));
     strcat(path, "/data");
     daemonize_(path);
+    vector<string> u_names;
 
     openlog("ChatServer", 0, LOG_WARNING);
 
@@ -107,10 +109,26 @@ void launch_server() {
                     clients.erase(*it);
                     continue;
                 }
-                //Отправляем данные
-                for(set<int>::iterator member = clients.begin(); member != clients.end(); member++){
-                    if(member != it)
-                        send(*member, buf, bytesRead, 0);
+
+                string req = buf;
+                string delimiter = "#";
+                string u_req = req.substr(0, req.find(delimiter));
+                if (u_req == "ureq") {
+                    req.erase(0, 5);
+                    if (find(u_names.begin(), u_names.end(), req) != u_names.end()){
+                        string ex_name_err = "uname_error";
+                        send(*it, ex_name_err.data(), ex_name_err.size(), 0);
+                    }
+                    else {
+                        u_names.push_back(req);
+                    }
+                }
+                else {
+                    //Отправляем данные
+                    for(set<int>::iterator member = clients.begin(); member != clients.end(); member++){
+                        if(member != it)
+                            send(*member, buf, bytesRead, 0);
+                    }
                 }
             }
         }
@@ -126,22 +144,16 @@ void *read (void *dummyPt)
         char buf[1024] = {'\0'};
         recv(client_sock, buf, sizeof(buf) + username.size(), 0);
         string recieveData = buf;
-        // string line = "\033[31m";
 
-        // int i=0;
-        // for(int i = 0; i < recieveData.size(); ++i) {
-
-            //ВНИМАНИЕ ВОПРОС - Я ДЕЙСТВИТЕЛЬНО НЕ ПОНИМАЮ И НЕ МОГУ НАЙТИ ПОЧЕМУ ОН НЕ ПЕЧАТАЕТ НИЧЕГО КРОМЕ НИЖЕ ПРЕДСТАВЛЕНОГО,
-            //А Я ВЕДЬ ХОЧУ ЕЩЕ И ИМЯ КЛИЕНТА НАПИСАТЬ, А ТАКЖЕ СОВЕРШЕННО НЕ ЯСНО ПОЧЕМУ ВПЕРВЫЕ ИМЯ ПОЛЬЗОВАТЕЛЯ ДУБЛИРУЕТСЯ
         if (recieveData.size() != 0) {
-            cout << "\n" << recieveData;
+            if (recieveData == "uname_error") {
+                cout << "\nBad name!\n";
+                exit(3);
+            }
+            else {
+                cout << "\n" << recieveData;
+            }
         }
-            // line+=recieveData.at(i);
-        // }
-        // line+="\033[0m";
-        // for(;recieveData.at(i) != '\n'; ++i) line+=recieveData.at(i);
-        // line+=username;
-        // cout << line;
     }
 }
 
@@ -168,6 +180,10 @@ int launch_client() {
 
     cout << "\033[1;36mEnter username: \033[0m";
     cin >> username;
+    string req = "ureq#";
+    req += username;
+    send(client_sock, req.data(), req.size(), 0);
+
 
     while(1){
         string mess;
