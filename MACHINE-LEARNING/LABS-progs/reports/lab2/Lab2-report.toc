@@ -1,0 +1,5 @@
+\babel@toc {russian}{}
+\contentsline {section}{\IeC {\CYRP }\IeC {\cyro }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyrk }\IeC {\cyra } \IeC {\cyrz }\IeC {\cyra }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrch }\IeC {\cyri }}{3}{section*.2}
+\contentsline {section}{\numberline {1}\IeC {\CYRK }\IeC {\cyrr }\IeC {\cyre }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyri }\IeC {\cyrk }\IeC {\cyri }-\IeC {\cyrn }\IeC {\cyro }\IeC {\cyrl }\IeC {\cyri }\IeC {\cyrk }\IeC {\cyri } \IeC {\cyri } \IeC {\cyrs }\IeC {\cyrp }\IeC {\cyra }\IeC {\cyrm } e-mail \IeC {\cyrs }\IeC {\cyro }\IeC {\cyro }\IeC {\cyrb }\IeC {\cyrshch }\IeC {\cyre }\IeC {\cyrn }\IeC {\cyri }\IeC {\cyrishrt }}{4}{section.1}
+\contentsline {section}{\numberline {2}\IeC {\CYRS }\IeC {\cyrg }\IeC {\cyre }\IeC {\cyrn }\IeC {\cyre }\IeC {\cyrr }\IeC {\cyri }\IeC {\cyrr }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrishrt } dataset}{5}{section.2}
+\contentsline {section}{\numberline {3}Titanic dataset}{6}{section.3}

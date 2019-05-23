@@ -31,9 +31,12 @@ class MLStructure(object):
         accuracy_list = []
         test_ratio = min_test_ratio
         while test_ratio <= max_test_ratio:
+            acc_sum = 0
             self.split_data_into_test_train(test_ratio)
-            self.classify()
-            accuracy_list.append([1 - test_ratio, accuracy_score(self.y_test, self.y_result)])
+            for it in range(5):
+                self.classify()
+                acc_sum += accuracy_score(self.y_test, self.y_result)
+            accuracy_list.append([1 - test_ratio, acc_sum / 5])
             test_ratio += step
             test_ratio = round(test_ratio, 2)
         return np.array(accuracy_list)
@@ -64,6 +67,15 @@ def plot_precision(accuracy_list, plot_path):
     plt.plot(test_ratio, accuracy, marker='o', markerfacecolor='orange', markersize=6, color='skyblue', linewidth=2)
     plt.ylabel('Accuracy score')
     plt.xlabel('Relative volume of trainig sample')
+    plt.savefig(plot_path)
+    plt.close()
+
+def plot_tree_precision(accuracy_list, plot_path):
+    """Plot 2D schedule with accuracy and number of leafes"""
+    leaf_num, accuracy = accuracy_list.T
+    plt.plot(leaf_num, accuracy, marker='o', markerfacecolor='orange', markersize=6, color='skyblue', linewidth=2)
+    plt.ylabel('Accuracy score')
+    plt.xlabel('Max leaf nodes')
     plt.savefig(plot_path)
     plt.close()
 
@@ -121,8 +133,51 @@ def plot_tree(ml_struct, output_filename):
     graph = pdot.graph_from_dot_data(dot_data.getvalue())
     graph[0].write_png(output_filename)
 
+def plot_tree_no_predict(ml_struct, output_filename):
+    """Plot result tree"""
+    dot_data = StringIO()
+    classes = list(map(str, ml_struct.clf.classes_))
+    export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
+                    special_characters=True, class_names=classes, feature_names=list(ml_struct.x))
+    graph = pdot.graph_from_dot_data(dot_data.getvalue())
+    graph[0].write_png(output_filename)
+
+def plot_tree_regr(ml_struct, output_filename):
+    """Plot result tree"""
+    dot_data = StringIO()
+    # classes = list(map(str, ml_struct.clf.classes_))
+    export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
+                    special_characters=True, feature_names=list(ml_struct.x))
+    graph = pdot.graph_from_dot_data(dot_data.getvalue())
+    graph[0].write_png(output_filename)
+
 def glass_get_x_y(input_frame):
+    """Split data-set 'glass' to X-mantrix and Y-array"""
     y_arr = input_frame[10]
     x_tab = input_frame.drop([0,10], axis=1)
     x_tab.columns = ["RI", "Na", "Mg", "Al", "Si", "K", "Ca", "Ba", "Fe"]
+    return x_tab, y_arr
+
+def spam7_get_x_y(input_frame):
+    """Split data-set 'spam7' to X-mantrix and Y-array"""
+    y_arr = input_frame['yesno'].map({'y': 1, 'n': 0}).astype(int)
+    x_tab = input_frame.drop('yesno', axis=1)
+    return x_tab, y_arr
+
+def nsw74psid1_get_x_y(input_frame):
+    """Split data-set 'nsw74psid1' to X-mantrix and Y-array"""
+    y_arr = input_frame['re78']
+    x_tab = input_frame.drop('re78', axis=1)
+    return x_tab, y_arr
+
+def lenses_get_x_y(input_frame):
+    """Split data-set 'lenses' to X-mantrix and Y-array"""
+    y_arr = input_frame['Type']
+    x_tab = input_frame.drop(['Id','Type'], axis=1)
+    return x_tab, y_arr
+
+def svmdata_get_x_y(input_frame):
+    """Split data-set 'svmdata' to X-mantrix and Y-array"""
+    y_arr = input_frame['Colors'].map({'green': 1, 'red': 0}).astype(int)
+    x_tab = input_frame.drop('Colors', axis=1)
     return x_tab, y_arr
