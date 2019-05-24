@@ -8,7 +8,7 @@ from sklearn.tree import export_graphviz
 import matplotlib.pyplot as plt
 from sklearn.neighbors import KernelDensity
 from sklearn.metrics.pairwise import polynomial_kernel
-import pydot as pdot
+import pydotplus as pdot
 
 class MLStructure(object):
     """Class, which contains all necessary data for data-analysis"""
@@ -131,7 +131,16 @@ def plot_tree(ml_struct, output_filename):
     export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
                     special_characters=True, class_names=classes, feature_names=list(ml_struct.x_train))
     graph = pdot.graph_from_dot_data(dot_data.getvalue())
-    graph[0].write_png(output_filename)
+    graph.write_png(output_filename)
+
+def plot_tree_rotate(ml_struct, output_filename):
+    """Plot result tree"""
+    dot_data = StringIO()
+    classes = list(map(str, ml_struct.clf.classes_))
+    export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
+                    special_characters=True, class_names=classes, feature_names=list(ml_struct.x_train), rotate=True)
+    graph = pdot.graph_from_dot_data(dot_data.getvalue())
+    graph.write_png(output_filename)
 
 def plot_tree_no_predict(ml_struct, output_filename):
     """Plot result tree"""
@@ -140,7 +149,7 @@ def plot_tree_no_predict(ml_struct, output_filename):
     export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
                     special_characters=True, class_names=classes, feature_names=list(ml_struct.x))
     graph = pdot.graph_from_dot_data(dot_data.getvalue())
-    graph[0].write_png(output_filename)
+    graph.write_png(output_filename)
 
 def plot_tree_regr(ml_struct, output_filename):
     """Plot result tree"""
@@ -149,7 +158,7 @@ def plot_tree_regr(ml_struct, output_filename):
     export_graphviz(ml_struct.clf, out_file=dot_data, filled=True, rounded=True,
                     special_characters=True, feature_names=list(ml_struct.x))
     graph = pdot.graph_from_dot_data(dot_data.getvalue())
-    graph[0].write_png(output_filename)
+    graph.write_png(output_filename)
 
 def glass_get_x_y(input_frame):
     """Split data-set 'glass' to X-mantrix and Y-array"""

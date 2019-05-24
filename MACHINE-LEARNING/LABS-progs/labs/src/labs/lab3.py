@@ -14,7 +14,7 @@ def glass():
     DATA.x_train, DATA.y_train = tls.glass_get_x_y(data_frame)
     DATA.x_test = np.reshape([1.516, 11.7, 1.01, 1.19, 72.59, 0.43, 11.44, 0.02, 0.1], (1, -1))
 
-    DATA.clf = DecisionTreeClassifier(max_depth=32, max_leaf_nodes=32)
+    DATA.clf = DecisionTreeClassifier(max_leaf_nodes=20)
     DATA.clf.fit(DATA.x_train, DATA.y_train)
     DATA.y_result = DATA.clf.predict_proba(DATA.x_test)
     print(DATA.y_result)
@@ -24,13 +24,13 @@ def glass():
     DATA.clf.fit(DATA.x_train, DATA.y_train)
     DATA.y_result = DATA.clf.predict_proba(DATA.x_test)
     print(DATA.y_result)
-    tls.plot_tree(DATA, 'results/Tree/glass_tree_opt.png')
+    tls.plot_tree_rotate(DATA, 'results/Tree/glass_tree_opt.png')
 
 def spam7_daag():
     """spam7 DAAG dataset"""
     train_set = pd.read_csv('data/spam7DAAG.csv')
     DATA.x, DATA.y = tls.spam7_get_x_y(train_set)
-    DATA.clf = DecisionTreeClassifier(max_leaf_nodes=20)
+    DATA.clf = DecisionTreeClassifier(max_leaf_nodes=8)
 
     DATA.clf.fit(DATA.x, DATA.y)
     tls.plot_tree_no_predict(DATA, 'results/Tree/spam7.png')
@@ -44,7 +44,7 @@ def spam7_daag():
             DATA.classify()
             acc_sum += accuracy_score(DATA.y_test, DATA.y_result)
         accuracy_list.append([n_leafs, acc_sum / 5])
-    tls.plot_tree_precision(np.array(accuracy_list), 'results/Tree/spam7.png')
+    tls.plot_tree_precision(np.array(accuracy_list), 'results/Tree/spam7_stat.png')
 
     DATA.clf = DecisionTreeClassifier(max_leaf_nodes=6)
     DATA.classify()
