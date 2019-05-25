@@ -127,4 +127,108 @@ svmdata3.SVMlab <- function(obj) {
     cat(sprintf("Sigmoid accuracy: %f\n", get_accuracy(test_set$Colors, predict(model, test_set_features))))
 }
 
+svmdata4.SVMlab <- function(obj) {
+    train_set <- read.csv("data/svmdata/svmdata4.csv")
+    test_set <- read.csv("data/svmdata/svmdata4test.csv")
+    test_set_features <- test_set[, -3]
 
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial")
+    poly_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Polynomial accuracy: %f\n", poly_accuracy))
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "radial")
+    radial_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Radial accuracy: %f\n", radial_accuracy))
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "sigmoid")
+    sigmoid_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Sigmoid accuracy: %f\n", sigmoid_accuracy))
+
+    accuracy_vector = c(poly_accuracy, radial_accuracy, sigmoid_accuracy)
+    names(accuracy_vector) = c("polynomial", "radial", "sigmoid")
+
+    png("results/SVM/data4_compare_hist.png")
+    barplot(accuracy_vector, ylim = c(0.75, 1.0),
+        col = c("coral", "cornflowerblue", "violet"),
+        main = "Kernels comparison", ylab = "Accuracy score",
+        xpd = FALSE)
+    dev.off()
+}
+
+svmdata5.SVMlab <- function(obj) {
+    train_set <- read.csv("data/svmdata/svmdata5.csv")
+    test_set <- read.csv("data/svmdata/svmdata5test.csv")
+    test_set_features <- test_set[, -3]
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial")
+    poly_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Polynomial accuracy: %f\n", poly_accuracy))
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "radial")
+    radial_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Radial accuracy: %f\n", radial_accuracy))
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "sigmoid")
+    sigmoid_accuracy <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Sigmoid accuracy: %f\n", sigmoid_accuracy))
+
+    accuracy_vector = c(poly_accuracy, radial_accuracy, sigmoid_accuracy)
+    names(accuracy_vector) = c("polynomial", "radial", "sigmoid")
+
+    png("results/SVM/data5_compare_hist.png")
+    barplot(accuracy_vector, ylim = c(0.2, 1.0),
+        col = c("coral", "cornflowerblue", "violet"),
+        main = "Kernels comparison", ylab = "Accuracy score",
+        xpd = FALSE)
+    dev.off()
+
+    area.pallete = palette_func
+    symbols.pallete = c("blue", "white")
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 1)
+    poly_accuracy_1 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Polynomial accuracy with gamma 1: %f\n", poly_accuracy_1))
+    png("results/SVM/data5_poly_1.png", width = 600)
+    plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
+    dev.off()
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 15)
+    poly_accuracy_15 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Polynomial accuracy with gamma 15: %f\n", poly_accuracy_15))
+    png("results/SVM/data5_poly_15.png", width = 600)
+    plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
+    dev.off()
+
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 18)
+    poly_accuracy_18 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
+    cat(sprintf("Polynomial accuracy with gamma 18: %f\n", poly_accuracy_18))
+    png("results/SVM/data5_poly_18.png", width = 600)
+    plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
+    dev.off()
+
+    accuracy_vector = c(poly_accuracy_1, poly_accuracy_15, poly_accuracy_18)
+    names(accuracy_vector) = c("gamma = 1", "gamma = 15", "gamma = 18")
+
+    png("results/SVM/data5_gamma_hist.png")
+    barplot(accuracy_vector, ylim = c(0.4, 0.65),
+        col = c("coral", "cornflowerblue", "violet"),
+        main = "Polynomial kernel", sub = "Gamma influence", ylab = "Accuracy score",
+        xpd = FALSE)
+    dev.off()
+}
+
+svmdata6.SVMlab <- function(obj) {
+    data_frame <- read.csv("data/svmdata/svmdata6.csv")
+    x = data_frame$Y
+    y = data_frame$Z
+
+    png("results/SVM/data6_eps.png", width = 900)
+    plot(x, y)
+    model = svm(x, y, type = "eps-regression", eps = 0.25, cost = 1, kernel = "radial")
+    points(x[model$index], y[model$index], col = "red")
+    predctions = predict(model, x)
+    lines(x, predctions, col = "deeppink4", lwd = 2)
+    lines(x, predctions + model$epsilon, col = "gold2")
+    lines(x, predctions - model$epsilon, col = "gold2")
+    dev.off()
+}

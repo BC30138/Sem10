@@ -6,12 +6,28 @@ tic_tac_toe.default <- function(obj) {
     cat("'Tic-tac-toe' dataset should be init in lab's object\n")
 }
 
+email <- function(obj) {
+    UseMethod("email")
+}
+
+titanic.default <- function(obj) {
+    cat("'Email spam' dataset should be init in lab's object\n")
+}
+
 glass <- function(obj) {
     UseMethod("glass")
 }
 
 glass.default <- function(obj) {
     cat("'Glass' dataset should be init in lab's object\n")
+}
+
+titanic <- function(obj) {
+    UseMethod("titanic")
+}
+
+titanic.default <- function(obj) {
+    cat("'Titanic' dataset should be init in lab's object\n")
 }
 
 svmdata1 <- function(obj) {
@@ -46,12 +62,20 @@ svmdata4.default <- function(obj) {
     cat("'Svmdata4' dataset should be init in lab's object\n")
 }
 
-titanic <- function(obj) {
-    UseMethod("titanic")
+svmdata5 <- function(obj) {
+    UseMethod("svmdata5")
 }
 
-titanic.default <- function(obj) {
-    cat("'Titanic' dataset should be init in lab's object\n")
+svmdata5.default <- function(obj) {
+    cat("'Svmdata5' dataset should be init in lab's object\n")
+}
+
+svmdata6 <- function(obj) {
+    UseMethod("svmdata6")
+}
+
+svmdata6.default <- function(obj) {
+    cat("'Svmdata6' dataset should be init in lab's object\n")
 }
 
 split_data_train_test <- function(input_frame, train_ratio) {
@@ -63,7 +87,7 @@ split_data_train_test <- function(input_frame, train_ratio) {
 }
 
 plot_vol_error <- function(ratio, accuracy,path) {
-    png(path)
+    png(path, width = 800)
     plot(ratio, accuracy,
         type = "b",
         xlab = "Volume of training sample",
@@ -85,7 +109,7 @@ get_accuracy_vol_dep <- function(data_frame, train_ratios, func) {
         train_set <- splitted_df$train_set
         for (it in 1:repeats) {
             model <- func(train_set, test_set)
-            accuracy <- accuracy + get_accuracy(fitted(model), test_set$V10)
+            accuracy <- accuracy + get_accuracy(fitted(model), test_set[[ncol(test_set)]])
         }
         accuracy_list[train_ind] <- accuracy / repeats
     }
@@ -119,7 +143,7 @@ get_accuracy_class_dep <- function(train_set, test_set, func) {
 }
 
 plot_exc_error <- function(accuracy,path) {
-    png(path)
+    png(path, width = 800)
     plot(1:length(accuracy), accuracy,
         type = "b",
         xlab = "Excluded class",

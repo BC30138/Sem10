@@ -1,6 +1,7 @@
 ### lab2: kknn ###
 source("src/tools.R")
 
+library(kernlab)
 library(kknn)
 
 KnnLab <- function() {
@@ -20,6 +21,20 @@ tic_tac_toe.KnnLab <- function(obj) {
     accuracy_list <- get_accuracy_vol_dep(data_frame, train_ratios, clf)
 
     plot_vol_error(train_ratios, accuracy_list, "results/kknn/tic_tac_toe.png")
+}
+
+email.KnnLab <- function(obj) {
+    data(spam)
+    data_frame <- spam
+
+    train_ratios <- seq(0.1, 0.9, 0.1)
+    clf <- function(tr_set, te_set) {
+        return(kknn(type~., tr_set, te_set, k = 25, kernel = "optimal"))
+    }
+
+    accuracy_list <- get_accuracy_vol_dep(data_frame, train_ratios, clf)
+
+    plot_vol_error(train_ratios, accuracy_list, "results/kknn/email.png")
 }
 
 glass.KnnLab <- function(obj) {
@@ -116,7 +131,7 @@ titanic.KnnLab <- function(obj) {
                 distance = 1)
     print(cross_valid_model)
 
-    png("results/kknn/titanic.png")
+    png("results/kknn/titanic.png", width = 900)
     plot(cross_valid_model,
         type="b",
         lwd=3)
