@@ -17,17 +17,19 @@ svmdata1.SVMlab <- function(obj) {
 
     model = svm(Color ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "linear")
 
-    png("results/SVM/data1_train_set.png", width = 600)
+    png("results/SVM/data1_train_set.png", width = 800)
     plot(model, train_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_train = predict(model, train_set_features)
     print(table(train_set$Color, predictions_train))
+    print(model)
 
-    png("results/SVM/data1_test_set.png", width = 600)
+    png("results/SVM/data1_test_set.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_test = predict(model, test_set_features)
     print(table(test_set$Color, predictions_test))
+    print(model)
 }
 
 svmdata2.SVMlab <- function(obj) {
@@ -43,14 +45,14 @@ svmdata2.SVMlab <- function(obj) {
 
     cat("C = 183 ---------\n")
 
-    png("results/SVM/data2_train_set_183.png", width = 600)
+    png("results/SVM/data2_train_set_183.png", width = 800)
     plot(model, train_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_train = predict(model, train_set_features)
     print(table(train_set$Colors, predictions_train))
     cat(sprintf("Accuracy: %f\n\n", get_accuracy(train_set$Colors, predictions_train)))
 
-    png("results/SVM/data2_test_set_183.png", width = 600)
+    png("results/SVM/data2_test_set_183.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_test = predict(model, test_set_features)
@@ -61,14 +63,14 @@ svmdata2.SVMlab <- function(obj) {
 
     cat("\nC = 1 -----------\n")
 
-    png("results/SVM/data2_train_set_1.png", width = 600)
+    png("results/SVM/data2_train_set_1.png", width = 800)
     plot(model, train_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_train = predict(model, train_set_features)
     print(table(train_set$Colors, predictions_train))
     cat(sprintf("Accuracy: %f\n\n", get_accuracy(train_set$Colors, predictions_train)))
 
-    png("results/SVM/data2_test_set_1.png", width = 600)
+    png("results/SVM/data2_test_set_1.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     predictions_test = predict(model, test_set_features)
@@ -97,31 +99,32 @@ svmdata3.SVMlab <- function(obj) {
         accuracy_list[degree_it] <- accuracy / repeats
     }
 
-    png("results/SVM/data3_poly_degree.png")
+    png("results/SVM/data3_poly_degree.png", width = 800)
     plot(1:length(accuracy_list), accuracy_list,
         type = "b",
         xlab = "degree",
         ylab = "Accuracy score",
+        ylim = c(0.4,1.0),
         col="red",
         lwd=3,
         pch=16
         )
     dev.off()
 
-    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", degree = 6)
-    png("results/SVM/data3_poly.png", width = 600)
+    model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", degree = 2)
+    png("results/SVM/data3_poly.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     cat(sprintf("Polynomial accuracy: %f\n", get_accuracy(test_set$Colors, predict(model, test_set_features))))
 
     model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "radial")
-    png("results/SVM/data3_radial.png", width = 600)
+    png("results/SVM/data3_radial.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     cat(sprintf("Radial accuracy: %f\n", get_accuracy(test_set$Colors, predict(model, test_set_features))))
 
     model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "sigmoid", gamma = 1.0)
-    png("results/SVM/data3_sigmoid.png", width = 600)
+    png("results/SVM/data3_sigmoid.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
     cat(sprintf("Sigmoid accuracy: %f\n", get_accuracy(test_set$Colors, predict(model, test_set_features))))
@@ -188,21 +191,21 @@ svmdata5.SVMlab <- function(obj) {
     model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 1)
     poly_accuracy_1 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
     cat(sprintf("Polynomial accuracy with gamma 1: %f\n", poly_accuracy_1))
-    png("results/SVM/data5_poly_1.png", width = 600)
+    png("results/SVM/data5_poly_1.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
 
     model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 15)
     poly_accuracy_15 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
     cat(sprintf("Polynomial accuracy with gamma 15: %f\n", poly_accuracy_15))
-    png("results/SVM/data5_poly_15.png", width = 600)
+    png("results/SVM/data5_poly_15.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
 
     model = svm(Colors ~ ., data = train_set, type = "C-classification", cost = 1, kernel = "polynomial", gamma = 18)
     poly_accuracy_18 <- get_accuracy(test_set$Colors, predict(model, test_set_features))
     cat(sprintf("Polynomial accuracy with gamma 18: %f\n", poly_accuracy_18))
-    png("results/SVM/data5_poly_18.png", width = 600)
+    png("results/SVM/data5_poly_18.png", width = 800)
     plot(model, test_set, symbolPalette = symbols.pallete, color.palette = area.pallete)
     dev.off()
 
