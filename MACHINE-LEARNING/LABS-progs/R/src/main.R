@@ -1,6 +1,8 @@
 source('src/tools.R')
 source('src/labs/lab2.R')
 source('src/labs/lab4.R')
+source('src/labs/lab5.R')
+source('src/labs/lab6.R')
 
-test <- SVMlab()
-svmdata5(test)
+test <- RegLab()
+reglab1(test)

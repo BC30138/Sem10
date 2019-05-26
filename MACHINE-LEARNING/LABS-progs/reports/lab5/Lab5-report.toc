@@ -1,0 +1,5 @@
+\babel@toc {russian}{}
+\contentsline {section}{\IeC {\CYRP }\IeC {\cyro }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyrk }\IeC {\cyra } \IeC {\cyrz }\IeC {\cyra }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrch }\IeC {\cyri }}{3}{section*.2}
+\contentsline {section}{\numberline {1}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<Vehicle>>}{4}{section.1}
+\contentsline {section}{\numberline {2}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<Glass>>}{4}{section.2}
+\contentsline {section}{\numberline {3}\IeC {\CYRI }\IeC {\cyrs }\IeC {\cyrp }\IeC {\cyro }\IeC {\cyrl }\IeC {\cyrsftsn }\IeC {\cyrz }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyri }\IeC {\cyre } KNN \IeC {\cyrv } \IeC {\cyra }\IeC {\cyrl }\IeC {\cyrg }\IeC {\cyro }\IeC {\cyrr }\IeC {\cyri }\IeC {\cyrt }\IeC {\cyrm }\IeC {\cyre } \IeC {\cyrb }\IeC {\cyru }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyri }\IeC {\cyrn }\IeC {\cyrg }\IeC {\cyra }}{5}{section.3}

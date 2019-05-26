@@ -30,6 +30,22 @@ titanic.default <- function(obj) {
     cat("'Titanic' dataset should be init in lab's object\n")
 }
 
+vehicle <- function(obj) {
+    UseMethod("vehicle")
+}
+
+vehicle.default <- function(obj) {
+    cat("'Vehicle' dataset should be init in lab's object\n")
+}
+
+reglab1 <- function(obj) {
+    UseMethod("reglab1")
+}
+
+reglab1.default <- function(obj) {
+    cat("'reglab1' dataset should be init in lab's object\n")
+}
+
 svmdata1 <- function(obj) {
     UseMethod("svmdata1")
 }
