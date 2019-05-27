@@ -1,11 +1,11 @@
-x1 = rnorm(100, mean = 200, sd = 100)
-y1 = rnorm(100, mean = 50, sd = 10)
+x1 = rnorm(100, mean = 200, sd = 60)
+y1 = rnorm(100, mean = 10, sd = 10)
 
 x2 = rnorm(100, mean = 10, sd = 20)
-y2 = rnorm(100, mean = 300, sd = 150)
+y2 = rnorm(100, mean = 400, sd = 200)
 
-x3 = rnorm(100, mean = 200, sd = 100)
-y3 = rnorm(100, mean = 500, sd = 10)
+x3 = rnorm(100, mean = 200, sd = 50)
+y3 = rnorm(100, mean = 800, sd = 10)
 
 x = as.matrix(c(x1,x2, x3))
 y = as.matrix(c(y1,y2, y3))

@@ -1,3 +1,5 @@
+library(zoo)
+
 tic_tac_toe <- function(obj) {
     UseMethod("tic_tac_toe")
 }
@@ -44,6 +46,110 @@ reglab1 <- function(obj) {
 
 reglab1.default <- function(obj) {
     cat("'reglab1' dataset should be init in lab's object\n")
+}
+
+reglab2 <- function(obj) {
+    UseMethod("reglab2")
+}
+
+reglab2.default <- function(obj) {
+    cat("'reglab2' dataset should be init in lab's object\n")
+}
+
+cygage <- function(obj) {
+    UseMethod("cygage")
+}
+
+cygage.default <- function(obj) {
+    cat("'cygage' dataset should be init in lab's object\n")
+}
+
+longley <- function(obj) {
+    UseMethod("longley")
+}
+
+longley.default <- function(obj) {
+    cat("'longley' dataset should be init in lab's object\n")
+}
+
+eustockmark <- function(obj) {
+    UseMethod("eustockmark")
+}
+
+eustockmark.default <- function(obj) {
+    cat("'eustockmark' dataset should be init in lab's object\n")
+}
+
+JnJ <- function(obj) {
+    UseMethod("JnJ")
+}
+
+JnJ.default <- function(obj) {
+    cat("'JnJ' dataset should be init in lab's object\n")
+}
+
+sunspotyear <- function(obj) {
+    UseMethod("sunspotyear")
+}
+
+sunspotyear.default <- function(obj) {
+    cat("'sunspotyear' dataset should be init in lab's object\n")
+}
+
+UKgas <- function(obj) {
+    UseMethod("UKgas")
+}
+
+UKgas.default <- function(obj) {
+    cat("'UKgas' dataset should be init in lab's object\n")
+}
+
+carsset <- function(obj) {
+    UseMethod("carsset")
+}
+
+carsset.default <- function(obj) {
+    cat("'carsset' dataset should be init in lab's object\n")
+}
+
+plutonset <- function(obj) {
+    UseMethod("plutonset")
+}
+
+plutonset.default <- function(obj) {
+    cat("'plutonset' dataset should be init in lab's object\n")
+}
+
+generated <- function(obj) {
+    UseMethod("generated")
+}
+
+generated.default <- function(obj) {
+    cat("'generated' dataset should be init in lab's object\n")
+}
+
+votesset <- function(obj) {
+    UseMethod("votesset")
+}
+
+votesset.default <- function(obj) {
+    cat("'votesset' dataset should be init in lab's object\n")
+}
+
+animals <- function(obj) {
+    UseMethod("animals")
+}
+
+animals.default <- function(obj) {
+    cat("'animals' dataset should be init in lab's object\n")
+}
+
+seeds <- function(obj) {
+    UseMethod("seeds")
+}
+
+seeds.default <- function(obj) {
+    cat("'seeds' dataset should be init in lab's object\n")
 }
 
 svmdata1 <- function(obj) {
@@ -181,4 +287,24 @@ palette_func <- function(n = 2) {
     cols = rainbow(n)
     cols[1:2] = c("olivedrab3", "firebrick1")
     return(cols)
+}
+
+get_full_df <- function(data_frame) {
+    new_frame <- zoo(data_frame)
+    new_frame <- fortify.zoo(new_frame)
+    colnames(new_frame) <- c("Year", "Val")
+    return(new_frame)
+}
+
+get_df_with_qtr <- function(data_frame) {
+    new_frame <- data.frame(yq = yearqtr(index(data_frame)))
+    new_frame <- data.frame(do.call('rbind', strsplit(as.character(new_frame$yq),' ',fixed=TRUE)), Val = data_frame)
+    Q1 <- new_frame[new_frame$X2 == "Q1",]
+    Q2 <- new_frame[new_frame$X2 == "Q2",]
+    Q3 <- new_frame[new_frame$X2 == "Q3",]
+    Q4 <- new_frame[new_frame$X2 == "Q4",]
+    new_frame$X1 <- as.numeric(levels(new_frame$X1))[new_frame$X1]
+    new_frame <- data.frame(new_frame$X1[!duplicated(new_frame$X1)], Q1$Val, Q2$Val, Q3$Val, Q4$Val)
+    colnames(new_frame) <- c("Year", "Qtr1", "Qtr2", "Qtr3", "Qtr4")
+    return(new_frame)
 }
