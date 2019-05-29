@@ -1,0 +1,626 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage[12pt]{extsizes}
+\usepackage{xcolor,listings}
+\usepackage[left=30mm, top=20mm, right=20mm, bottom=20mm, nohead, footskip=10mm]{geometry}
+
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage{indentfirst}
+\usepackage{float}
+\restylefloat{table}
+\usepackage{hyperref}
+\usepackage{mathtext}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{shapes,positioning,shadows,trees,automata,arrows.meta,shapes.geometric}
+\usepackage{pgf-pie}
+\usepackage{chngcntr}
+\usepackage{pdfpages}
+\usepackage{systeme}
+\usepackage{empheq}
+\counterwithin{figure}{section}
+
+\pagestyle{plain}
+
+\definecolor{String}{RGB}{134, 179, 0}
+\definecolor{KeyColor}{RGB}{160,0,102}
+
+\lstdefinestyle{style}{
+	aboveskip=0pt,
+	belowskip=10pt,
+	showspaces=false,
+	showstringspaces=false,
+	basicstyle=\ttfamily\footnotesize,
+	numbers=left,
+	texcl=true,
+	keywordstyle=\color{KeyColor},
+	identifierstyle=\color{black},
+	numberstyle=\scriptsize,
+	stringstyle=\color{String},
+	commentstyle=\color{gray},
+	frame=tb
+}
+
+\begin{document}
+    \thispagestyle{empty}
+	\begin{center}
+		Санкт-Петербургский политехнический университет Петра Великого\\
+		Институт прикладной математики и механики\\
+		Кафедра <<Телематика (при ЦНИИ РТК)>>\\
+		\vspace{7cm}
+		\textbf{\Large{КУРСОВАЯ РАБОТА}}\\
+		\vspace{0.5cm}
+		\large{по дисциплине <<Проектирование приложений под ОС UNIX>>\\}
+	\end{center}
+	\vspace{3cm}
+	\begin{tabular} {l l l}
+	\hspace{10cm} & Выполнил: & Титов А.И.\\
+	& Проверил: & Глазунов В.В.
+	\end{tabular}
+	\vspace{7cm}
+	\begin{center}
+		Санкт-Петербург\\
+		2019
+    \end{center}
+
+
+	\renewcommand\contentsname{Оглавление}
+	\tableofcontents
+
+	\newpage
+	\addcontentsline{toc}{section}{Постановка задачи}
+	\section*{Постановка задачи}
+
+	\begin{enumerate}
+		\item Написать скрипт на языке \textbf{bash} для поиска файлов в указанной директории не новее установленной даты. Дата передается в формате <<дд/мм/гггг>>.
+		\item Нужно написать демон под линукс который бы читал
+		конфигурационный файл, брал оттуда параметры: каталог,
+		время проверки. После чего проверял заданий
+		каталог(рекурсивно), через заданные промежутки времени, на
+		предмет наличия/отсутствия модификации файлов и
+		записывал результаты в файл журнала, предусмотреть
+		обработку сигналов: SIGHUP - для перечитывания
+		конфигурационного файла, и SIGTERM - для контролируемого
+		завершения демона (запись о выходе в файл журнала).
+		\item Написать веб-сервер работающий в виде демона,
+		веб-сервер должен обеспечивать базовую поддержку протокола
+		HTTP и отдавать статический контент, обязательна реализация
+		метода GET, по желанию методы HEAD и POST.
+		Предусмотреть контроль и журналирование ошибок (либо в
+		файл либо через syslog). Обеспечить одновременную работу
+		сервера с множественным числом клиентов.
+		\item Написать сетевой чат, сервер должен быть
+		реализован в виде демона, предусмотреть контроль и
+		журналирование ошибок, либо через syslog, либо в файл
+		журнала. Сервер должен обеспечивать прием тестовых
+		сообщений и дальнейшую пересылку их всем участникам.
+		Реализовать сетевой клиент для проверки работоспособности
+		сервера.
+	\end{enumerate}
+
+	\newpage
+	\section{Bash-скрипт}
+
+	\begin{lstlisting}[language = bash, style=style, title={Скрипт на языке bash}]
+#!/bin/bash
+
+error_func () {
+    echo Error: Incorrect arguments. Type -h to get help.
+    exit 1
+}
+
+usage="$(basename "$0")
+    Something like smart search
+
+    Usage:
+		$(basename "$0") <directory> <date>
+		search files in <directory> not newer then <date>.
+                                Where <date> should have format dd/mm/yyyy.
+
+    Options:
+        -h --help       show this help text"
+
+case $1 in
+    -h|--help)
+        if [ $# -ne 1 ]; then
+            error_func
+        fi
+        echo "$usage"
+        exit
+        ;;
+    *)
+        if [ $# -ne 2 ]; then
+            error_func
+        fi
+
+        if [ ! -d "$1" ]; then
+            echo Error: Search directory should exist.
+            exit 1
+        fi
+        ;;
+esac
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+IFS='/' read -ra datearray <<< "$2"
+date=${datearray[2]}"-"${datearray[1]}"-"${datearray[0]}
+
+mkdir tmp #question about if such directory exists, maybe remove this line?
+tmp="tmp.$RANDOM"
+touch --date $date ./tmp/$tmp
+
+find $1 -type f -not -newer ./tmp/$tmp ! -iname $tmp
+
+rm -rf tmp
+	\end{lstlisting}
+
+	\newpage
+	\section{Демон-процесс}
+
+	\begin{lstlisting} [language = C++, style=style, title = {Исходный код на языке C++}]
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <syslog.h>
+#include <signal.h>
+#include <dirent.h>
+#include <string.h>
+#include <time.h>
+#include "../tools/tools.h"
+
+char * dir_path;
+int recheck_time;
+FILE *config_file;
+char *config_path;
+
+void read_config(){
+	char * strtime;
+	size_t path_len = 0;
+	size_t strtime_len = 0;
+
+	config_file = fopen(config_path, "r");
+	if (config_file == NULL) {
+		syslog(LOG_ERR, "config file not found:
+		path to config should be as argument");
+		exit(EXIT_FAILURE);
+	}
+
+	if (getline(&dir_path, &path_len, config_file) == -1) {
+		syslog(LOG_ERR, "config file formatting is incorrect");
+		exit(EXIT_FAILURE);
+	}
+
+	if (getline(&strtime, &strtime_len, config_file) == -1) {
+		syslog(LOG_ERR, "config file formatting is incorrect");
+		exit(EXIT_FAILURE);
+	}
+
+	char *tmp;
+	size_t len = 0;
+	if (getline(&tmp, &len, config_file) != -1) {
+		syslog(LOG_ERR, "config file formatting is incorrect");
+		exit(EXIT_FAILURE);
+	}
+
+	recheck_time = atoi(strtime);
+	strtok(dir_path, "\n");
+
+	fclose(config_file);
+}
+
+void signal_handler(int sig) {
+	switch (sig)
+	{
+		case SIGHUP:
+			read_config();
+			syslog(LOG_WARNING, "config file updating complete");
+			break;
+		case SIGTERM:
+			syslog(LOG_WARNING, "daemon terminated");
+			exit(0);
+			break;
+	}
+}
+
+void run_task_2(char *argv[]) {
+
+	daemonize_();
+
+	openlog("task2daemon", 0, LOG_USER);
+	// работа с содержимым конфига
+	DIR *dir;
+	struct dirent *entry;
+	struct stat file_stat;
+
+	config_path = argv[1];
+	read_config();
+	signal(SIGTERM, signal_handler);
+	signal(SIGHUP, signal_handler);
+	while(1){
+		dir = opendir(dir_path);
+		while ((entry = readdir(dir)) != NULL) {
+			if ((strcmp(entry->d_name, ".") != 0)
+					&& (strcmp(entry->d_name, "..") != 0)) {
+				char *file_path = malloc(strlen(dir_path)
+						+ strlen(entry->d_name) + 2);
+				strcpy(file_path, dir_path);
+				strcat(file_path, "/");
+				strcat(file_path, entry->d_name);
+				stat(file_path,  &file_stat);
+				if ((time(NULL) - file_stat.st_mtime)
+					< recheck_time ) {
+					syslog(LOG_NOTICE,
+						"content of folder modified in
+						 file: %s", entry->d_name);
+				}
+			}
+		}
+		closedir(dir);
+		sleep(recheck_time);
+	}
+}
+	\end{lstlisting}
+
+	\section{Http-демон}
+
+	\begin{lstlisting} [language = C++, style=style, title = {Исходный код на языке C++}]
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h> // некоторые важные переменные, такие EXIT\_SUCCESS и переменные, вроде size\_t
+#include <unistd.h> // POSIX стандартные типы
+#include <sys/stat.h> // для того, чтобы варнинга не было о том, что не стоит
+                      // использовать umask заданный неявно
+#include <syslog.h> // для работы с журналом
+#include <signal.h> // для работы с сигналами
+#include <dirent.h> // для работы с файловой системой
+#include <string.h>
+#include "../tools/tools.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+
+
+using namespace std;
+
+string answerHeadHTML = "HTTP/1.1 200 OK\r\nVersion: HTTP/
+1.1\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: ";
+string answerHeadPicture = "HTTP/1.1 200 OK\r\nVersion: HTTP/
+1.1\r\nContent-Type: image/png\r\nContent-Length: ";
+string answerNotFound = "HTTP/1.1 404 Not Found\r\nConnection:
+close\r\nVersion: HTTP/1.1\r\nContent-type: text/
+html\r\nContent-length: ";
+
+int listener;
+
+void signal_handler_task_3(int sig) {
+    switch (sig)
+    {
+    case SIGTERM:
+        syslog(LOG_WARNING, "Daemon terminated!");
+        close(listener);
+        closelog();
+        exit(0);
+        break;
+    }
+}
+
+void getData(string& tmpStr)
+{
+    tmpStr.erase(tmpStr.begin(), tmpStr.begin() + 5);
+    int count = 0;
+    while(tmpStr.at(count) !='\r')
+        count++;
+    tmpStr.erase(tmpStr.begin() + count, tmpStr.end());
+    tmpStr.erase(tmpStr.end() - 9, tmpStr.end());
+}
+
+void run_task_3() {
+    char path[1024];
+    getcwd(path, sizeof(path));
+    strcat(path, "/data");
+
+    daemonize_(path);
+    openlog("task3daemon", 0, LOG_DAEMON);
+    syslog(LOG_WARNING, "daemon has been started");
+    signal(SIGTERM, signal_handler_task_3);
+
+    int sock;
+    struct sockaddr_in addr;
+    char buff[1024];// messages
+    listener = socket(AF_INET, SOCK_STREAM, 0);
+
+    if(listener < 0){
+        syslog(LOG_WARNING, "Error while creating socket.");
+        exit(1);
+    }
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(8485);
+    addr.sin_addr.s_addr = INADDR_ANY;
+
+    if(bind(listener, (struct sockaddr *)&addr, sizeof(addr)) < 0){
+        syslog(LOG_WARNING, "Socket is already used.");
+        exit(2);
+    }
+
+    listen(listener, 1);
+    while(1){
+        sock = accept(listener, NULL, NULL);
+        if(sock < 0){
+            syslog(LOG_WARNING, "Socket can not be accepted.");
+            exit(3);
+        }
+        switch(fork()){
+            case -1:
+                syslog(LOG_WARNING, "Fork can not be created.");
+                break;
+            case 0:
+            {
+                close(listener);
+                if(recv(sock, buff , 1024, 0) < 0)
+                    syslog(LOG_WARNING, "Data hasn't been recieved.");
+
+                string recieveData = buff;//Полученный GET запрос
+                string body;//Тело http ответа
+                string answer;//http ответ
+
+                getData(recieveData);//Путь запрашиваемого файла
+
+                if(recieveData.find(".html") != std::string::npos)
+                    answer = answerHeadHTML;
+                else if(recieveData.find(".png") != std::string::npos)
+                    answer = answerHeadPicture;
+
+
+                std::ifstream webpage(recieveData);
+                if (webpage.fail()){
+                    answer = answerNotFound;
+					body = "<HTML><HEAD><TITLE>404 - Not Found
+					</TITLE></HEAD><BODY BGCOLOR=\"FFFFFF\">
+					<H1>404 - Not Found</H1><HR>
+					</BODY></HTML>";
+                }
+                else {
+                    string text((
+                                istreambuf_iterator<char>(webpage)),
+                            (istreambuf_iterator<char>()));
+
+                    body = text;
+                }
+                answer+=to_string(body.size());
+                answer+="\r\n\r\n";
+                answer+=body;
+                if(send(sock, answer.c_str() ,answer.size(), 0) < 0)
+                    syslog(LOG_WARNING, "Data hasn't been sent.");
+                close(sock);
+                exit(0);
+            }
+            default:
+                close(sock);
+        }
+    }
+}
+	\end{lstlisting}
+
+	\newpage
+	\section{Демон-чат}
+	\begin{lstlisting} [language = C++, style=style, title = {Исходный код на языке C++}]
+#include<iostream>
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<sys/socket.h>
+#include<netinet/in.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<set>
+#include <algorithm>
+#include<syslog.h>
+#include<signal.h>
+#include<vector>
+
+#include "../tools/tools.h"
+
+using namespace std;
+
+#define port 8087
+
+int listener;
+void signal_handler_server(int SIG) {
+    switch (SIG)
+    {
+    case SIGTERM:
+        syslog(LOG_WARNING, "Daemon has been terminated.");
+        close(listener);
+        closelog();
+        exit(0);
+    default:
+        break;
+    }
+}
+
+void launch_server() {
+    char path[1024];
+    getcwd(path, sizeof(path));
+    strcat(path, "/data");
+    daemonize_(path);
+    vector<string> u_names;
+
+    openlog("ChatServer", 0, LOG_WARNING);
+
+    signal(SIGTERM, signal_handler_server);
+
+    syslog(LOG_WARNING, "daemon has been started.");
+
+    struct sockaddr_in addr;
+    char buf[1024];
+    int bytesRead;
+
+    listener = socket(AF_INET, SOCK_STREAM, 0);
+    if(listener < 0){
+        syslog(LOG_WARNING, "Socket can't be created.");
+        exit(1);
+    }
+
+    fcntl(listener, F_SETFL, O_NONBLOCK);
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+    if(bind(listener, (struct sockaddr*)&addr, sizeof(addr)) < 0){
+        syslog(LOG_DAEMON, "Socket is already used.");
+        exit(2);
+    }
+
+    listen(listener, 2);
+    set<int> clients;
+
+    while(1){
+        //Заполняем множество сокетов
+        fd_set readset;
+        FD_ZERO(&readset);
+        FD_SET(listener, &readset);
+
+        for(set<int>:: iterator it = clients.begin(); it != clients.end(); it++)
+            FD_SET(*it, &readset);
+        //Задаем таймаут
+        timeval timeout;
+        timeout.tv_sec = 15;
+        timeout.tv_usec = 0;
+
+        //Ждем событие в одном из сокетов
+        int mx = max(listener, *max_element(clients.begin(), clients.end()));
+        if(select(mx+1, &readset, NULL, NULL, &timeout) < 0){
+            syslog(LOG_DAEMON, "Select problem.");
+            exit(3);
+        }
+
+        //Определяем тип события и выполняем соответствующие действия.
+        if(FD_ISSET(listener, &readset)){
+            //Поступил новый запрос на соединение, используем accept
+            int sock = accept(listener, NULL, NULL);
+            if(sock < 0){
+                syslog(LOG_DAEMON, "Accept error.");
+                exit(3);
+            }
+            fcntl(sock, F_SETFL, O_NONBLOCK);
+            clients.insert(sock);
+        }
+        for(set<int>::iterator it = clients.begin(); it != clients.end(); it++){
+            if(FD_ISSET(*it, &readset)){
+                //Поступили данные от клиента, читаем их
+                bytesRead = recv(*it, buf, 1024, 0);
+                if(bytesRead <= 0){
+                    //Соединения разорвано удаляем сокет из множества
+                    close(*it);
+                    clients.erase(*it);
+                    continue;
+                }
+
+                string req = buf;
+                string delimiter = "#";
+                string u_req = req.substr(0, req.find(delimiter));
+                if (u_req == "ureq") {
+                    req.erase(0, 5);
+			if (find(u_names.begin(), u_names.end(), req)
+				!= u_names.end()){
+                        string ex_name_err = "uname_error";
+                        send(*it, ex_name_err.data(), ex_name_err.size(), 0);
+                    }
+                    else {
+                        u_names.push_back(req);
+                    }
+                }
+                else {
+                    //Отправляем данные
+			for(set<int>::iterator member = clients.begin();
+					member != clients.end(); member++){
+                        if(member != it)
+                            send(*member, buf, bytesRead, 0);
+                    }
+                }
+            }
+        }
+    }
+}
+
+string username;
+int client_sock;
+void *read (void *dummyPt)
+{
+    while(true){
+
+        char buf[1024] = {'\0'};
+        recv(client_sock, buf, sizeof(buf) + username.size(), 0);
+        string recieveData = buf;
+
+        if (recieveData.size() != 0) {
+            if (recieveData == "uname_error") {
+                cout << "\nBad name!\n";
+                exit(3);
+            }
+            else {
+                cout << "\n" << recieveData;
+            }
+        }
+    }
+}
+
+int launch_client() {
+    pthread_t threads[1];
+    pthread_create(&threads[0], NULL, read, NULL);
+    pthread_detach(threads[0]);
+
+    struct sockaddr_in addr;
+    client_sock = socket(AF_INET, SOCK_STREAM, 0);
+    if(client_sock < 0){
+        perror("Socket can't be created");
+        exit(1);
+    }
+
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+    if(connect(client_sock, (struct sockaddr*)&addr, sizeof(addr)) < 0){
+        perror("Socket can't be connected");
+        exit(2);
+    }
+
+    cout << "\033[1;36mEnter username: \033[0m";
+    cin >> username;
+    string req = "ureq#";
+    req += username;
+    send(client_sock, req.data(), req.size(), 0);
+
+
+    while(1){
+        string mess;
+        cout << "\033[1;32m" << username << "#\033[0m";
+        getline(cin, mess);
+        mess+="\n";
+
+        if(mess == string(":exit\n")){//Выход из чата
+            close(client_sock);
+            return 0;
+        }
+        else{
+            string result = username;
+            result+="# ";
+            result+=mess;
+            mess = result;
+            send(client_sock, mess.data(), mess.size(), 0);
+        }
+    }
+    close(client_sock);
+
+    return 0;
+}
+	\end{lstlisting}
+\end{document}

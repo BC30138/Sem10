@@ -1,0 +1,11 @@
+\babel@toc {russian}{}
+\contentsline {section}{\IeC {\CYRP }\IeC {\cyro }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyrk }\IeC {\cyra } \IeC {\cyrz }\IeC {\cyra }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrch }\IeC {\cyri }}{3}{section*.2}
+\contentsline {section}{\numberline {1}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<reglab1>>}{5}{section.1}
+\contentsline {section}{\numberline {2}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<reglab2>>}{6}{section.2}
+\contentsline {section}{\numberline {3}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<cygage>>}{6}{section.3}
+\contentsline {section}{\numberline {4}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<Longley>>}{7}{section.4}
+\contentsline {section}{\numberline {5}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<EuStockMarkets>>}{8}{section.5}
+\contentsline {section}{\numberline {6}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<JohnsonJohnson>>}{10}{section.6}
+\contentsline {section}{\numberline {7}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<sunspot.year>>}{13}{section.7}
+\contentsline {section}{\numberline {8}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<UKgas>>}{15}{section.8}
+\contentsline {section}{\numberline {9}\IeC {\CYRN }\IeC {\cyra }\IeC {\cyrb }\IeC {\cyro }\IeC {\cyrr } \IeC {\cyrd }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyrn }\IeC {\cyrery }\IeC {\cyrh } <<cars>>}{18}{section.9}

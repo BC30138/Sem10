@@ -6,4 +6,4 @@ source('src/labs/lab6.R')
 source('src/labs/lab7.R')
 
 test <- ClusterLab()
-seeds(test)
+generated(test)

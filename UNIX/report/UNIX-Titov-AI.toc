@@ -1,0 +1,6 @@
+\babel@toc {russian}{}
+\contentsline {section}{\IeC {\CYRP }\IeC {\cyro }\IeC {\cyrs }\IeC {\cyrt }\IeC {\cyra }\IeC {\cyrn }\IeC {\cyro }\IeC {\cyrv }\IeC {\cyrk }\IeC {\cyra } \IeC {\cyrz }\IeC {\cyra }\IeC {\cyrd }\IeC {\cyra }\IeC {\cyrch }\IeC {\cyri }}{3}{section*.1}
+\contentsline {section}{\numberline {1}Bash-\IeC {\cyrs }\IeC {\cyrk }\IeC {\cyrr }\IeC {\cyri }\IeC {\cyrp }\IeC {\cyrt }}{4}{section.1}
+\contentsline {section}{\numberline {2}\IeC {\CYRD }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyro }\IeC {\cyrn }-\IeC {\cyrp }\IeC {\cyrr }\IeC {\cyro }\IeC {\cyrc }\IeC {\cyre }\IeC {\cyrs }\IeC {\cyrs }}{5}{section.2}
+\contentsline {section}{\numberline {3}Http-\IeC {\cyrd }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyro }\IeC {\cyrn }}{7}{section.3}
+\contentsline {section}{\numberline {4}\IeC {\CYRD }\IeC {\cyre }\IeC {\cyrm }\IeC {\cyro }\IeC {\cyrn }-\IeC {\cyrch }\IeC {\cyra }\IeC {\cyrt }}{10}{section.4}

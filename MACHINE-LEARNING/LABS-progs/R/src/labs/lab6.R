@@ -90,7 +90,7 @@ eustockmark.RegLab <- function(obj) {
     CAC_model = lm(CAC ~ Year, data = data_frame)
     FTSE_model = lm(FTSE ~ Year, data = data_frame)
 
-    png("results/Reg/stockmark_reg_DAX.png", width = 800)
+    png("results/Reg/stockmark_reg_DAX.png")
     plot(data_frame$Year, data_frame$DAX,
         type = "l", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Val", main = "DAX")
@@ -99,7 +99,7 @@ eustockmark.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/stockmark_reg_SMI.png", width = 800)
+    png("results/Reg/stockmark_reg_SMI.png")
     plot(data_frame$Year, data_frame$SMI,
         type = "l", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Val", main = "SMI")
@@ -108,7 +108,7 @@ eustockmark.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/stockmark_reg_CAC.png", width = 800)
+    png("results/Reg/stockmark_reg_CAC.png")
     plot(data_frame$Year, data_frame$CAC,
         type = "l", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Val", main = "CAC")
@@ -117,7 +117,7 @@ eustockmark.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/stockmark_reg_FTSE.png", width = 800)
+    png("results/Reg/stockmark_reg_FTSE.png")
     plot(data_frame$Year, data_frame$FTSE,
         type = "l", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Val", main = "FTSE")
@@ -161,7 +161,7 @@ JnJ.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/JnJ_reg_line_qtr1.png", width = 800)
+    png("results/Reg/JnJ_reg_line_qtr1.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr1,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Profit", main = "Qtr1")
@@ -171,7 +171,7 @@ JnJ.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/JnJ_reg_line_qtr2.png", width = 800)
+    png("results/Reg/JnJ_reg_line_qtr2.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr2,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Profit", main = "Qtr2")
@@ -181,7 +181,7 @@ JnJ.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/JnJ_reg_line_qtr3.png", width = 800)
+    png("results/Reg/JnJ_reg_line_qtr3.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr3,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Profit", main = "Qtr3")
@@ -191,7 +191,7 @@ JnJ.RegLab <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/JnJ_reg_line_qtr4.png", width = 800)
+    png("results/Reg/JnJ_reg_line_qtr4.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr4,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Profit", main = "Qtr4")
@@ -287,7 +287,7 @@ UKgas <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/UKgas_reg_line_qtr1.png", width = 800)
+    png("results/Reg/UKgas_reg_line_qtr1.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr1,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Vol", main = "Qtr1")
@@ -297,7 +297,7 @@ UKgas <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/UKgas_reg_line_qtr2.png", width = 800)
+    png("results/Reg/UKgas_reg_line_qtr2.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr2,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Vol", main = "Qtr2")
@@ -307,7 +307,7 @@ UKgas <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/UKgas_reg_line_qtr3.png", width = 800)
+    png("results/Reg/UKgas_reg_line_qtr3.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr3,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Vol", main = "Qtr3")
@@ -317,7 +317,7 @@ UKgas <- function(obj) {
         lty=1, col=c('red', 'blue'), cex=1.1)
     dev.off()
 
-    png("results/Reg/UKgas_reg_line_qtr4.png", width = 800)
+    png("results/Reg/UKgas_reg_line_qtr4.png")
     plot(data_frame_qtr$Year, data_frame_qtr$Qtr4,
         type = "o", lwd = 3, pch=16, col = "red",
         xlab = "Year", ylab = "Vol", main = "Qtr4")
@@ -363,7 +363,7 @@ UKgas <- function(obj) {
 carsset <- function(obj) {
     data_frame <- cars
 
-    png("results/Reg/cars_data.png")
+    png("results/Reg/cars_data.png", width = 800)
     plot(data_frame, col='red', pch=20, cex=2, main="cars dataset",
 	xlab="Speed", ylab="Dist")
     dev.off()
