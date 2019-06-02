@@ -1,4 +1,7 @@
 """usefull functions"""
+import random
+import bisect
+import collections
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -15,3 +18,21 @@ def surface_plot(matrix, path):
     fig.colorbar(surf)
     fig.set_size_inches(20.5, 8.5)
     fig.savefig(path, dpi=100)
+
+def cdf(weights):
+    """generate weights"""
+    total = sum(weights)
+    result = []
+    cumsum = 0
+    for w in weights:
+        cumsum += w
+        result.append(cumsum / total)
+    return result
+
+def choice(population, weights):
+    """choice with prob"""
+    assert len(population) == len(weights)
+    cdf_vals = cdf(weights)
+    x = random.random()
+    idx = bisect.bisect(cdf_vals, x)
+    return population[idx]
