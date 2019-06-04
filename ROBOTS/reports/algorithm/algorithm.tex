@@ -1,0 +1,63 @@
+\documentclass[]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage[12pt]{extsizes}
+\linespread{1.3}
+\usepackage[left=3cm, top=1.5cm, right=1.3cm, bottom=2cm, nohead, footskip=10mm]{geometry}
+
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage{indentfirst}
+\usepackage{float}
+\restylefloat{table}
+\usepackage{hyperref}
+\usepackage{mathtext}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{xspace}
+\usepackage{listings}
+\usetikzlibrary{shapes,positioning,shadows,trees,automata,arrows.meta,shapes.geometric}
+\usepackage{pgf-pie}
+\usepackage{chngcntr}
+\usepackage{pdfpages}
+\usepackage{systeme}
+\usepackage{empheq}
+\numberwithin{equation}{section}
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{none}{. }
+\captionsetup{labelsep=none}
+
+
+\pagestyle{plain}
+
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\arabic{enumii}.}
+
+\captionsetup[lstlisting]{
+    singlelinecheck=false
+    ,margin=3pt,
+    font=,
+    skip=5pt
+    }
+
+
+\lstdefinestyle{TEXTstyle}{
+    basicstyle=\footnotesize\ttfamily,
+    aboveskip=0pt,
+	belowskip=10pt,
+	showspaces=false,
+	showstringspaces=false,
+    basicstyle=\ttfamily\footnotesize,
+    texcl=true,
+    morecomment=[l]{\#},
+    commentstyle=\color{gray},
+    frame=tb
+}
+
+\begin{document}
+    Первым делом строим область методом Diamond-Square. Получаем карту вроде такой.
+
+\end{document}

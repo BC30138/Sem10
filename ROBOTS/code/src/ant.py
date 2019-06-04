@@ -1,5 +1,6 @@
 """Ant algorithm"""
 import random
+from time import time
 import math
 import numpy as np
 from tools import choice
@@ -78,6 +79,8 @@ class AntsAlg:
         self.iter_num = iter_num
         self.alpha = alpha
         self.rho = rho
+        self.max_dist_x_y = math.sqrt(self.matrix.shape[0] + self.matrix.shape[1])
+        self.max_dist_z = region.max_dist_z
 
     def generate(self, start_point, end_point):
         """generate path and cost"""
@@ -85,8 +88,8 @@ class AntsAlg:
         best_path = list()
         best_length = float("inf")
 
+        s_time = time()
         for iteration in range(self.iter_num):
-            print(iteration)
             next_iteration_pheromone = Pheromone()
             next_iteration_pheromone.equal(pheromone.map, pheromone.values)
             next_iteration_pheromone.mult(1 - self.rho)
@@ -99,22 +102,41 @@ class AntsAlg:
                     possible_moves = self.get_possible_moves(path, current_position)
                     next_position = (0, 0)
                     if iteration == 0:
-                        next_position = random.choice(possible_moves)
+                        moves_probabilities = self.get_probability_first_it(possible_moves, current_position, end_point)
+                        next_position = choice(possible_moves, moves_probabilities)
                     else:
                         moves_probabilities = self.get_probability(current_position, possible_moves, pheromone)
                         next_position = choice(possible_moves, moves_probabilities)
-                    path_length += math.sqrt(pow(next_position[0] - current_position[0], 2)
-                                             + pow(next_position[1] - current_position[1], 2)
-                                             + pow(self.matrix[next_position] - self.matrix[current_position], 2))
+                    path_length += math.sqrt((next_position[0] - current_position[0]) ** 2
+                                             + (next_position[1] - current_position[1]) ** 2
+                                             + (self.matrix[next_position] - self.matrix[current_position]) ** 2)
                     next_iteration_pheromone.plus_equal([current_position, next_position], 1 / path_length)
                     current_position = next_position
                 if path_length < best_length:
                     best_length = path_length
                     best_path = path
             pheromone = next_iteration_pheromone
-
         best_path.append(end_point)
-        return best_path, best_length
+        e_time = time()
+        res_time = e_time - s_time
+        return best_path, best_length, res_time
+
+    def get_probability_first_it(self, possible_moves, current_position, end_point):
+        """first iteration get prob"""
+        moves_probabilities = np.empty((0))
+        for move in possible_moves:
+            dist_z = float(abs(self.matrix[current_position] - self.matrix[move]))
+            if dist_z == 0.0:
+                dist_z = 0.1
+            dist_z = dist_z / self.max_dist_z
+            if move == end_point:
+                weight = (1.0 / dist_z)
+            else:
+                dist_x_y = math.sqrt((end_point[0] - move[0]) ** 2
+                                        + (end_point[1] - move[1]) ** 2)
+                weight = ((1.0 / dist_z) + (1.0 / dist_x_y)) / 2.0
+            moves_probabilities = np.append(moves_probabilities, weight)
+        return moves_probabilities
 
     def get_probability(self, current_position, possible_moves, pheromone):
         """get array of probabilities for possible moves"""
@@ -129,7 +151,6 @@ class AntsAlg:
         else:
             moves_probabilities = np.ones(moves_probabilities.shape)
         return moves_probabilities
-
 
     def get_possible_moves(self, path, current_position):
         """get possible points pon grid for next step"""
@@ -183,6 +204,6 @@ class AntsAlg:
                 pass
 
         if not not_deleted_moves:
-            list.append(not_deleted_moves, random.choice(possible_moves))
-
-        return not_deleted_moves
+            return possible_moves
+        else:
+            return not_deleted_moves

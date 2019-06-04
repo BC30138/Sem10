@@ -14,6 +14,7 @@ class Region:
         self.height = (n + m) / 2
         self.noise = self.max_element * R
         self.rec_approx = 0.3 * pow(self.max_element + 1, 2) + 0.8 * self.max_element
+        self.max_dist_z = 0.0
 
     def generate(self):
         """main method"""
@@ -56,6 +57,7 @@ class Region:
             bar.finish
         self.matrix = self.matrix[0:self.n, 0:self.m]
         self.matrix = np.around(self.matrix, decimals=3)
+        self.max_dist_z = np.amax(self.matrix) - np.amin(self.matrix)
 
     def square(self, x_1, y_1, x_2, y_2):
         """square step of algorithm"""
