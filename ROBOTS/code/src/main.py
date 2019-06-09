@@ -1,20 +1,32 @@
 """main file"""
 import numpy as np
 import tools
-from region import Region
-from ant import AntsAlg
+from graph import Graph
+from ant import EAlg
 
-def test_main():
-    """function for testing"""
-    n = 5
-    # n_robots_tasks = 5
-    region = Region(n, n, 0.02)
-    region.generate()
-    tools.surface_plot(region.matrix, "data/test_grid.png")
-    ants_alg = AntsAlg(region, 10, 10, 0.0, 0.9)
-    path, length, res_time = ants_alg.generate((0, 0), (4, 4))
-    print(res_time)
-    tools.plot_path(region.matrix, path, "data/test_path.png")
-    # print([region.matrix[x] for x in path])
 
-test_main()
+
+def main_test():
+    # sizes = (25, 50, 100, 250, 500, 1000)
+    sizes = (5, 10)
+    for size in sizes:
+        for map_it in range(10):
+            graph = Graph(size, size, 0.02)
+            graph.generate()
+
+
+def dev_test():
+    size = 5
+    graph = Graph(size, size, 0.02)
+    graph.generate()
+    ealg_obj = EAlg(
+        50,
+        5,
+        1.0,
+        1.0,
+        0.9,
+        50
+    )
+    ealg_obj.get_path(graph, [0, 0], [4, 4])
+
+dev_test()

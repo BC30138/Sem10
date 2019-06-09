@@ -1,10 +1,11 @@
-"""Region class"""
+"""Graph class"""
 import random
 import math
 import numpy as np
-from progress.bar import Bar
+from tools import get_conj
+from tools import get_distance
 
-class Region:
+class Graph:
     """class for diamond square algorithm"""
     def __init__(self, n, m, R):
         self.n = n
@@ -13,8 +14,10 @@ class Region:
         self.matrix = np.zeros((self.max_element + 1, self.max_element + 1))
         self.height = (n + m) / 2
         self.noise = self.max_element * R
-        self.rec_approx = 0.3 * pow(self.max_element + 1, 2) + 0.8 * self.max_element
         self.max_dist_z = 0.0
+        self.costs = [[float(0) for x in range(self.max_element + 1)] for y in range(self.max_element + 1)]
+        self.available_moves = [[float(0) for x in range(self.max_element + 1)] for y in range(self.max_element + 1)]
+        self.pheromone = [[float(0) for x in range(self.max_element + 1)] for y in range(self.max_element + 1)]
 
     def generate(self):
         """main method"""
@@ -24,40 +27,34 @@ class Region:
         self.matrix[0][self.max_element] = random.random() * self.height
 
         side_length = self.max_element
-        progress_h = int(self.rec_approx / 100) + 1
-        mess = 'Generating matrix with size: {}x{}'.format(self.n, self.m)
-        iter = 0
-        with Bar(mess, max = 100,  suffix='%(percent)d%%') as bar:
-            while side_length != 1:
-                x_1 = 0
-                y_1 = 0
-                x_2 = side_length
-                y_2 = side_length
-                while True:
-                    iter += 1
-                    if (iter % progress_h) == 0:
-                        bar.next()
-                    self.square(x_1, y_1, x_2, y_2)
-                    self.diamond(x_1, y_1, x_1, y_2)
-                    self.diamond(x_1, y_2, x_2, y_2)
-                    self.diamond(x_2, y_2, x_2, y_1)
-                    self.diamond(x_2, y_1, x_1, y_1)
-                    if y_2 == self.max_element:
-                        if x_2 == self.max_element:
-                            break
-                        else:
-                            x_1 += side_length
-                            x_2 += side_length
-                            y_1 = 0
-                            y_2 = side_length
+        while side_length != 1:
+            x_1 = 0
+            y_1 = 0
+            x_2 = side_length
+            y_2 = side_length
+            while True:
+                self.square(x_1, y_1, x_2, y_2)
+                self.diamond(x_1, y_1, x_1, y_2)
+                self.diamond(x_1, y_2, x_2, y_2)
+                self.diamond(x_2, y_2, x_2, y_1)
+                self.diamond(x_2, y_1, x_1, y_1)
+                if y_2 == self.max_element:
+                    if x_2 == self.max_element:
+                        break
                     else:
-                        y_1 += side_length
-                        y_2 += side_length
-                side_length = int(side_length / 2)
-            bar.finish
+                        x_1 += side_length
+                        x_2 += side_length
+                        y_1 = 0
+                        y_2 = side_length
+                else:
+                    y_1 += side_length
+                    y_2 += side_length
+            side_length = int(side_length / 2)
         self.matrix = self.matrix[0:self.n, 0:self.m]
         self.matrix = np.around(self.matrix, decimals=3)
         self.max_dist_z = np.amax(self.matrix) - np.amin(self.matrix)
+
+        self.generate_costs_and_moves()
 
     def square(self, x_1, y_1, x_2, y_2):
         """square step of algorithm"""
@@ -95,8 +92,25 @@ class Region:
                     nodes_sum = self.matrix[x_1][y_1] + self.matrix[x_2][y_2] + self.matrix[center_x][y_1 - rad]
                     self.matrix[center_x][y_1] = (nodes_sum / 3) + random.random() * (2 * self.noise) - self.noise
 
+    def generate_costs_and_moves(self):
+        """Cost is distance by z between point and conjugate point"""
+        for it in range(self.matrix.shape[0]):
+            for jt in range(self.matrix.shape[1]):
+                costs_to_conj = []
+                conj_points = get_conj(self.matrix, [it, jt])
+                for point in conj_points:
+                    costs_to_conj.append(abs(self.matrix[point[0]][point[1]] - self.matrix[it][jt]))
+                self.costs[it][jt] = (costs_to_conj)
+                self.available_moves[it][jt] = conj_points
 
+    def get_size(self):
+        """Get size of graph in format (,)"""
+        return (self.matrix.shape[0], self.matrix.shape[1])
 
-
-
-
+    def init_pheromone(self, final):
+        for it in range(self.matrix.shape[0]):
+            for jt in range(self.matrix.shape[1]):
+                if it == final[0] and jt == final[1]:
+                    self.pheromone[it][jt] = float('inf')
+                else:
+                    self.pheromone[it][jt] = get_distance([it, jt], final)
