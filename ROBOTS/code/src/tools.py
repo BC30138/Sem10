@@ -2,47 +2,55 @@
 import random
 import math
 import bisect
-import collections
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-
-# def plot_path(matrix, way, save_path):
-#     """plor 3d surface"""
-#     (x, y) = np.meshgrid(np.arange(matrix.shape[0]), np.arange(matrix.shape[1]))
-#     z = list()
-#     for it in range(len(x)):
-#         list.append(path_z, matrix[path_x[it]][path_y[it]])
-#     fig = plt.figure()
-#     ax = plt.axes(projection='3d')
-#     ax.set_xlabel('X')
-#     ax.set_ylabel('Y')
-#     ax.set_zlabel('Z')
-#     fig.set_size_inches(20.5, 8.5)
-#     path_x = [x[0] for x in way]
-#     path_y = [x[1] for x in way]
-#     path_z = list()
-#     for it in range(len(way)):
-#         list.append(path_z, matrix[path_x[it]][path_y[it]])
-#     ax.plot(path_x, path_y, path_z, 'ro')
-#     surf = ax.plot_surface(x, y, matrix, rstride=1, cstride=1, cmap=plt.get_cmap("viridis"), edgecolor='none')
-#     fig.colorbar(surf)
-#     plt.show()
-    # fig.savefig(save_path, dpi=100)
-
-def surface_plot(matrix, path):
-    """plor 3d surface"""
-    (x, y) = np.meshgrid(np.arange(matrix.shape[0]), np.arange(matrix.shape[1]))
+def plot_surface(graph, file_name):
+    """Plot 3d surface"""
+    (x, y) = np.meshgrid(np.arange(graph.get_size()[0]), np.arange(graph.get_size()[1]))
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    surf = ax.plot_surface(x, y, matrix, cmap=plt.get_cmap("viridis"))
+    surf = ax.plot_surface(x, y, graph.get_matrix(), cmap=plt.get_cmap("gist_earth"))
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     fig.colorbar(surf)
     fig.set_size_inches(20.5, 8.5)
-    fig.savefig(path, dpi=100)
+    plt.show()
+
+def plot_map(graph, file_name):
+    """Plot map in heatmap format"""
+    plot_heatmap(graph.get_matrix(), file_name)
+
+def plot_paths(graph, paths, file_name):
+    """Plot path on map"""
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    pl = ax.imshow(graph.get_matrix(), cmap=plt.get_cmap("gist_earth"))
+    fig.colorbar(pl)
+    fig.set_size_inches(8.5, 8.5)
+    for path in paths:
+        ax.plot([x for x, y in path], [y for x, y in path], linewidth=2.0)
+        ax.plot(path[0][0], path[0][1], "ro", c="black")
+        ax.plot(path[len(path) - 1][0], path[len(path) - 1][1], "ro", c="red")
+    fig.savefig(file_name, dpi=100)
+
+def plot_heuristic_d(graph, file_name):
+    """Plot heuristic by distance in heatmap format"""
+    plot_heatmap(graph.heuristic_d, file_name)
+
+def plot_pheromone(graph, file_name):
+    """Plot pheromone heatmap"""
+    plot_heatmap(graph.pheromone, file_name)
+
+def plot_heatmap(matrix, file_name):
+    """Plot 2d heat map"""
+    fig = plt.figure()
+    ax = plt.imshow(matrix, cmap=plt.get_cmap("gist_earth"))
+    fig.colorbar(ax)
+    fig.set_size_inches(8.5, 8.5)
+    fig.savefig(file_name, dpi=100)
 
 def cdf(weights):
     """generate weights"""
@@ -54,13 +62,12 @@ def cdf(weights):
         result.append(cumsum / total)
     return result
 
-def choice(population, weights):
+def choice(weights):
     """choice with prob"""
-    assert len(population) == len(weights)
     cdf_vals = cdf(weights)
     x = random.random()
     idx = bisect.bisect(cdf_vals, x)
-    return population[idx]
+    return idx
 
 def get_conj(matrix, point):
     """returns conjugate points for point in matrix"""
@@ -101,6 +108,14 @@ def get_conj(matrix, point):
 
     return conj_points
 
-def get_distance(x, y):
+def get_distance_proj(x, y):
     """distance between two point by x and y using Euclid metric"""
     return math.sqrt((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2)
+
+def get_distance(x, y, matrix):
+    """distance between two point by x, y and z using Euclid metric"""
+    return math.sqrt((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2 + (matrix[x[0]][x[1]] - matrix[y[0]][y[1]]) ** 2)
+
+def get_mean(some_list):
+    """Returns mean value of list"""
+    return sum(some_list) / len(some_list)
