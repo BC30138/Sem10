@@ -1,5 +1,4 @@
 """usefull functions"""
-import random
 import math
 import bisect
 import numpy as np
@@ -65,7 +64,7 @@ def cdf(weights):
 def choice(weights):
     """choice with prob"""
     cdf_vals = cdf(weights)
-    x = random.random()
+    x = np.random.uniform(low=0.0, high=1.0)
     idx = bisect.bisect(cdf_vals, x)
     return idx
 

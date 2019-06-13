@@ -1,4 +1,5 @@
 """main file"""
+from time import time
 from tools import plot_map
 from tools import plot_paths
 from tools import plot_heuristic_d
@@ -6,7 +7,6 @@ from tools import plot_pheromone
 from tools import plot_surface
 from graph import Graph
 from ant import EAlg
-from time import time
 
 EALG_OBJ = EAlg(
     20,
@@ -28,12 +28,14 @@ def main_test():
             graph.generate()
 
 def examples_of_data():
+    """Necessary for report"""
     size = 250
     graph = Graph(size, size, 0.05, 0.8)
     graph.generate()
     graph.init_pheromone_n_heuristics([50, 80])
     plot_heuristic_d(graph, "data/heuristics/heuristic_d.png")
     plot_pheromone(graph, "data/heuristics/pheromone.png")
+    # plot_surface(graph, "data/surface.png")
     plot_map(graph, "data/maps/map_250.png")
 
 def dev_test():
@@ -43,7 +45,6 @@ def dev_test():
     graph = Graph(size, size, 0.3, 0.1)
     graph.generate()
     s_time = time()
-    # plot_surface(graph, "data/surface.png")
     path_1, cost_1 = EALG_OBJ.get_path(graph, [1, 1], [100, 200])
     path_2, cost_2 = EALG_OBJ.get_path(graph, [100, 210], [23, 50])
     e_time = time()

@@ -1,5 +1,4 @@
 """Graph class"""
-import random
 import math
 import numpy as np
 from tools import get_conj
@@ -111,12 +110,12 @@ class Graph:
             else:
                 if y_1 == 0:
                     vertexes += [self.matrix[x_1][y_1],
-                             self.matrix[x_2][y_2],
-                             self.matrix[center_x][y_1 + rad]]
+                                 self.matrix[x_2][y_2],
+                                 self.matrix[center_x][y_1 + rad]]
                 if y_1 == self.max_element:
                     vertexes += [self.matrix[x_1][y_1],
-                             self.matrix[x_2][y_2],
-                             self.matrix[center_x][y_1 - rad]]
+                                 self.matrix[x_2][y_2],
+                                 self.matrix[center_x][y_1 - rad]]
             x = center_x
             y = y_1
         self.matrix[x][y] = get_mean(vertexes) + np.random.uniform(low=(- self.R * rad * 2), high=(self.R * rad * 2))
@@ -147,7 +146,7 @@ class Graph:
         for it in range(self.n):
             for jt in range(self.m):
                 if not (it == end_point[0] and jt == end_point[1]):
-                    pheromone = 1 - (get_distance_proj([it, jt], end_point) / self.max_dist_x_y + random.random() * self.pheromone_eur_par)
+                    pheromone = 1 - (get_distance_proj([it, jt], end_point) / self.max_dist_x_y + np.random.uniform(- self.pheromone_eur_par, self.pheromone_eur_par))
                     if pheromone < 0:
                         self.pheromone[it][jt] = 0.0
                     else:
