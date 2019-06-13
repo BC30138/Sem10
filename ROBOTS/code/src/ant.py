@@ -35,6 +35,8 @@ class Ant:
         choosen_idx = choice(weights)
         self.position = available_moves[choosen_idx]
         self.path.append(self.position)
+        # if moves_costs[choosen_idx] == 0.0: # was Loch Ness bug and this is for safety
+        #     moves_costs[choosen_idx] += 0.01
         self.increase.append(moves_costs[choosen_idx])
         self.path_length += moves_costs[choosen_idx]
         self.iteration += 1
@@ -63,6 +65,7 @@ class Ant:
                 for jt in range(idx, len(self.path) - 1 - self.path[::-1].index(it)): #last idx
                     self.path.pop(idx)
                     self.path_length -= self.increase[idx]
+                    self.increase.pop(idx)
 
 class EAlg:
     """Evolution algorithm"""
@@ -88,16 +91,16 @@ class EAlg:
                 ant = Ant(graph, start, self.alpha, self.beta, self.q)
                 while ant.get_pos() != end_point:
                     ant.move()
-                    # if (ant.iteration == lim):
-                    #     print(ant.path[len(ant.path) - 50:len(ant.path)])
-                    #     ant.fail = True
-                    #     quit()
-                # if not ant.fail:
-                pos = ant.get_pos()
-                pheromone_increment[pos[0]][pos[1]] += ant.get_pheromone_increase(len(ant.get_path()) - 1)
-                ant.delete_loops()
-                if ant.get_path_length() < path_length:
-                    path = ant.get_path()
-                    path_length = ant.get_path_length()
-            graph.update_pheromone(pheromone_increment, self.rho)
+                    if (ant.iteration == lim):
+                        ant.fail = True
+                        break
+                    pos = ant.get_pos()
+                    pheromone_increment[pos[0]][pos[1]] += ant.get_pheromone_increase(len(ant.get_path()) - 1)
+                if not ant.fail:
+                    ant.delete_loops()
+                    if ant.get_path_length() < path_length:
+                        path = ant.get_path()
+                        path_length = ant.get_path_length()
+            if not ant.fail:
+                graph.update_pheromone(pheromone_increment, self.rho)
         return path, path_length
