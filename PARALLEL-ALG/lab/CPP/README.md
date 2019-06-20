@@ -5,6 +5,9 @@
 2. [ Описание архитектуры проекта ](#arch)
 3. [ Сборка программы ](#compile)
 4. [ Запуск программы ](#run)
+5. [ MPI ](#MPI)
+6. [ OpenMP ](#OpenMP)
+7. [ Pthreads ](#pthreads)
 
 <a name="task"></a>
 ### 1. Постановка задачи
@@ -64,3 +67,12 @@ $ make pthreads
 ```bash
 $ app/alg.out
 ```
+
+<a name="MPI"></a>
+### 5. MPI
+
+<a name="OpenMP"></a>
+### 6. OpenMP
+
+<a name="pthreads"></a>
+### 7. Pthreads
