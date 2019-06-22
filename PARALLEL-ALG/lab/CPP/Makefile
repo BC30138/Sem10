@@ -1,8 +1,9 @@
 CC=g++
-CFLAGS=-o0 -Wall
+CFLAGS= -std=c++11 -o0 -Wall
 LDFLAGS=
 
 ALGSOURCES=src/algorithm/MainAlg.cpp
+ALGSOURCES+=src/algorithm/ThomasAlg.cpp
 ALGOBJECTS=$(ALGSOURCES:.cpp=.o)
 ALGEXECUTABLE=app/alg.out
 
