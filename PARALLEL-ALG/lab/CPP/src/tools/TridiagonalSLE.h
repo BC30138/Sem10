@@ -16,7 +16,7 @@ class TridiagonalSLE {
 
   public:
     TridiagonalSLE();
-    TridiagonalSLE(int len_of_middle);
+    TridiagonalSLE(unsigned long len_of_middle);
     void generate_random_SLE(unsigned long len_of_middle);
     void solve();
     void show();

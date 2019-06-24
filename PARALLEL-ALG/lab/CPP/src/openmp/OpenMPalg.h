@@ -6,7 +6,7 @@ using namespace std;
 class OpenMPalg : public TridiagonalSLE{
   public:
     OpenMPalg(): TridiagonalSLE() {}
-    OpenMPalg(int len_of_middle):  TridiagonalSLE(len_of_middle) { }
+    OpenMPalg(unsigned long len_of_middle):  TridiagonalSLE(len_of_middle) { }
     void solve(int thread_num);  
 };
 

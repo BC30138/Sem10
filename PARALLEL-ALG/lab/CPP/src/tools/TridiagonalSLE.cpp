@@ -17,7 +17,7 @@ TridiagonalSLE::TridiagonalSLE() {
     n = 0;
 }
 
-TridiagonalSLE::TridiagonalSLE(int len_of_middle) {
+TridiagonalSLE::TridiagonalSLE(unsigned long len_of_middle) {
     generate_random_SLE(len_of_middle);
 }
 
@@ -62,7 +62,7 @@ void TridiagonalSLE::solve() {
     x[n - 1] = (d[n - 1] - b[n - 2] * beta[n - 2]) / 
                 (a[n - 1] + b[n - 2] * alpha[n - 2]);
 
-    for (int it = n - 2; it >= 0; it--) {
+    for (unsigned long it = n - 2; it >= 0; it--) {
         x[it] = alpha[it] * x[it + 1] + beta[it];
     }
 }

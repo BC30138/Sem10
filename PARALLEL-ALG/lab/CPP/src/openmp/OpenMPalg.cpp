@@ -10,8 +10,8 @@ using namespace std;
 void OpenMPalg::solve(int thread_num) {
     vector<double> a_temp(n);
     vector<double> d_temp(n);
-    int k = floor(double(n) / double(thread_num));
-    int last_thread_dif = n % k;
+    unsigned long long k = floor(double(n) / double(thread_num));
+    unsigned long long last_thread_dif = n % k;
 
     vector<double> b_bound(thread_num - 1);
     vector<double> a_bound(thread_num);
@@ -23,12 +23,12 @@ void OpenMPalg::solve(int thread_num) {
     #pragma omp parallel num_threads(thread_num)
     {   
         int thread = omp_get_thread_num(); 
-        int row_num;
+        unsigned long long row_num;
         if (thread != thread_num - 1) row_num = k;
         else row_num = k + last_thread_dif;
 
-        int row_start = thread * k;
-        int row_end = row_start + row_num; 
+        unsigned long long row_start = thread * k;
+        unsigned long long  row_end = row_start + row_num; 
 
         bool first_thread = false;
         bool last_thread = false;
@@ -64,7 +64,7 @@ void OpenMPalg::solve(int thread_num) {
 
         double tmp; 
         if (!first_thread) f_thread[0] = b_thread[0];  
-        for (int r_it = 1; r_it < row_num; r_it++) {
+        for (unsigned long long r_it = 1; r_it < row_num; r_it++) {
             tmp = b_thread[r_it] / a_thread[r_it - 1];
             a_thread[r_it] = a_thread[r_it] - c_thread[r_it - 1] * tmp;
             d_thread[r_it] = d_thread[r_it] - d_thread[r_it - 1] * tmp;
@@ -73,7 +73,7 @@ void OpenMPalg::solve(int thread_num) {
 
         #pragma omp critical 
         {
-            for (int r_it = 0; r_it < row_num; r_it++) {
+            for (unsigned long long r_it = 0; r_it < row_num; r_it++) {
                 a_temp[row_start + r_it] = a_thread[r_it];
                 d_temp[row_start + r_it] = d_thread[r_it];
             }
@@ -82,6 +82,7 @@ void OpenMPalg::solve(int thread_num) {
         #pragma omp barrier
 
         g_thread[row_num - 1] = c_thread[row_num - 2];
+        // unsigned long long lim = 0;
         for (int r_it = row_num - 3; r_it >= 0; r_it --) {
             tmp = c_thread[r_it] / a_thread[r_it + 1];
             d_thread[r_it] = d_thread[r_it] - d_thread[r_it + 1] * tmp;
@@ -128,19 +129,19 @@ void OpenMPalg::solve(int thread_num) {
         
         x_thread[row_num - 1] = x_bound[thread];
         if (first_thread) {
-            for (int it = 0; it < row_num - 1; it++) {
+            for (unsigned long long it = 0; it < row_num - 1; it++) {
                 x_thread[it] = (d_thread[it] - g_thread[it] * x_bound[0]) / a_thread[it];
             }
         }
         else {
-            for (int it = 0; it < row_num - 1; it++) {
+            for (unsigned long long it = 0; it < row_num - 1; it++) {
                 x_thread[it] = (d_thread[it] - g_thread[it + 1] * x_bound[thread] - f_thread[it] * x_bound[thread - 1]) / a_thread[it];
             }
         }
 
         #pragma omp critical
         {
-            for (int r_it = 0; r_it < row_num; r_it++) {
+            for (unsigned long long r_it = 0; r_it < row_num; r_it++) {
                 x[row_start + r_it] = x_thread[r_it];
             }
         }
