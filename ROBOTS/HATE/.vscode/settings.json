@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/usr/local/bin/python3",
+    "cSpell.enabled": false,
+    "python.linting.pylintEnabled": true
+}
