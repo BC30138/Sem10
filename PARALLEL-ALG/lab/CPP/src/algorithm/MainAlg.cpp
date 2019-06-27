@@ -1,10 +1,11 @@
 #include<iostream>
-#include"ThomasAlg.h"
+#include"../tools/TridiagonalSLE.h"
 using namespace std;
 
 int main() {
-    // generate_equation_coeff()
-    test();
+    TridiagonalSLE test(3);
+    test.solve();
+    test.show();
 
     return 0;
 }

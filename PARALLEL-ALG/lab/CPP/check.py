@@ -1,11 +1,15 @@
 import numpy as np
 
-A = np.array([
-    [0.850324, 3.98008, 0.0],
-    [1.8969  , 7.43512, 5.11713],
-    [0.0     , 8.09567, 9.95085]
-    ])
+file = open("data/test_matrix.data")
+lines = file.readlines() 
+n = int(lines[0].rstrip().split()[1])
+matrix = []
+for line_it in range(5, 5 + n):
+    matrix.append(list(map(float, lines[line_it].rstrip().split('\t')))) 
 
-d = np.array([8.91611, 5.6039, 9.66611])
+d = lines[5 + n].rstrip().split()
+del d[0]
+d = np.array(list(map(float, d)))
+matrix = np.array(matrix)
 
-print(np.linalg.solve(A, d))
+print(np.linalg.solve(matrix, d))
