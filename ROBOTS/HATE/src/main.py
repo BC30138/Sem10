@@ -13,5 +13,5 @@ dsmap.generate()
 map_for_calc = dsmap.get_norm_matrix()
 map_for_calc = to_vector(map_for_calc)
 
-
+ddddd
 print(map_for_calc)
