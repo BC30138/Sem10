@@ -24,7 +24,7 @@ def main_test():
     sizes = (5, 10)
     for size in sizes:
         for map_it in range(10):
-            graph = Graph(size, size, 0.02, 0.1)
+            graph = Graph(size, size, 0.02, 0.01)
             graph.generate()
 
 def examples_of_data():
@@ -52,6 +52,8 @@ def dev_test():
     # print(e_time - s_time)
     # paths = [path_1, path_2]
     # plot_map(graph, "data/maps/map_250.png")
+    plot_heuristic_d(graph, "data/heuristics/heuristic_d.png")
+    plot_pheromone(graph, "data/heuristics/pheromone.png")
     print(alg_time)
     plot_paths(graph, opt_paths, "data/path/test.png")
 
