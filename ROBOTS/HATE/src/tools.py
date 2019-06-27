@@ -34,14 +34,6 @@ def plot_paths(graph, paths, file_name):
         ax.plot(path[len(path) - 1][0], path[len(path) - 1][1], "ro", c="red")
     fig.savefig(file_name, dpi=100)
 
-def plot_heuristic_d(graph, file_name):
-    """Plot heuristic by distance in heatmap format"""
-    plot_heatmap(graph.heuristic_d, file_name)
-
-def plot_pheromone(graph, file_name):
-    """Plot pheromone heatmap"""
-    plot_heatmap(graph.pheromone, file_name)
-
 def plot_heatmap(matrix, file_name):
     """Plot 2d heat map"""
     fig = plt.figure()
@@ -49,6 +41,10 @@ def plot_heatmap(matrix, file_name):
     fig.colorbar(ax)
     fig.set_size_inches(8.5, 8.5)
     fig.savefig(file_name, dpi=100)
+
+def get_distance(x, y, matrix):
+    """distance between two point by x, y and z using Euclid metric"""
+    return (x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2 + (matrix[x[0]][x[1]] - matrix[y[0]][y[1]]) ** 2
 
 def cdf(weights):
     """generate weights"""
@@ -67,52 +63,25 @@ def choice(weights):
     idx = bisect.bisect(cdf_vals, x)
     return idx
 
-def get_conj(matrix, point):
-    """returns conjugate points for point in matrix"""
+def get_conj(vertex, size):
     conj_points = []
-    top_left = True
-    top_right = True
-    bottom_left = True
-    bottom_right = True
-    if point[0] > 0:
-        conj_points.append([point[0] - 1, point[1]])
-    else:
-        top_left = False
-        top_right = False
-    if point[0] < matrix.shape[0] - 1:
-        conj_points.append([point[0] + 1, point[1]])
-    else:
-        bottom_left = False
-        bottom_right = False
-    if point[1] > 0:
-        conj_points.append([point[0], point[1] - 1])
-    else:
-        bottom_left = False
-        top_left = False
-    if point[1] < matrix.shape[1] - 1:
-        conj_points.append([point[0], point[1] + 1])
-    else:
-        top_right = False
-        bottom_right = False
-
-    if top_left:
-        conj_points.append([point[0] - 1, point[1] - 1])
-    if top_right:
-        conj_points.append([point[0] - 1, point[1] + 1])
-    if bottom_left:
-        conj_points.append([point[0] + 1, point[1] - 1])
-    if bottom_right:
-        conj_points.append([point[0] + 1, point[1] + 1])
-
+    if vertex % size != 0:
+        conj_points.append(vertex - 1)
+    if vertex >= size:
+        conj_points.append(vertex - size)
+    if vertex + size < size ** 2:
+        conj_points.append(vertex + size)
+    if vertex % size != size - 1:
+        conj_points.append(vertex + 1)
     return conj_points
 
-def get_distance_proj(x, y):
-    """distance between two point by x and y using Euclid metric"""
-    return math.sqrt((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2)
+def plot_heuristic(heuristic_map, file_name):
+    """Plot heuristic by distance in heatmap format"""
+    plot_heatmap(heuristic_map, file_name)
 
-def get_distance(x, y, matrix):
-    """distance between two point by x, y and z using Euclid metric"""
-    return math.sqrt((x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2 + (matrix[x[0]][x[1]] - matrix[y[0]][y[1]]) ** 2)
+def plot_pheromone(pheromone_map, file_name):
+    """Plot pheromone heatmap"""
+    plot_heatmap(pheromone_map, file_name)
 
 def get_mean(some_list):
     """Returns mean value of list"""
@@ -124,3 +93,24 @@ def to_vector(input_map):
         for j in range(len(input_map)):
             vec.append(input_map[i][j])
     return vec
+
+def get_coord(vert, size):
+    i = 0
+    while(vert >= size):
+        vert -= size
+        i += 1
+    return [i, vert]
+
+def get_distance_square_proj(x, y):
+    """distance between two point by x and y using Euclid metric"""
+    return (x[0] - y[0]) ** 2 + (x[1] - y[1]) ** 2
+
+def get_edge_number(fstvert, sndvert, size):
+    i = min([fstvert, sndvert])
+    j = max([fstvert, sndvert])
+    if j - i == 1:
+        return i + i // size * (size - 1)
+    if j - i == size:
+        return i + j // size * (size - 1)
+    print("smth wrong")
+    return -1

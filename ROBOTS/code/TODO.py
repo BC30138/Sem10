@@ -1,1 +1,0 @@
-#TODO: ants losts many times, some targets without

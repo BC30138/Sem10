@@ -84,14 +84,17 @@ class EAlg:
         path = []
         path_length = float('inf')
         graph.init_pheromone_n_heuristics(end_point)
-        lim = graph.get_size()[0] * graph.get_size()[1] / 10
+        lim = 0
+        if (graph.get_size()[0] + graph.get_size()[1]) / 2 < 100:
+            lim = 10000
+        else: lim = graph.get_size()[0] * graph.get_size()[1] / 10
         for it in range(self.iter_size):
             pheromone_increment = np.zeros(graph.get_size())
             for ant_it in range(self.pop_size):
                 ant = Ant(graph, start, self.alpha, self.beta, self.q)
                 while ant.get_pos() != end_point:
                     ant.move()
-                    if (ant.iteration == lim):
+                    if ant.iteration == lim:
                         ant.fail = True
                         break
                     pos = ant.get_pos()
@@ -103,4 +106,5 @@ class EAlg:
                         path_length = ant.get_path_length()
             if not ant.fail:
                 graph.update_pheromone(pheromone_increment, self.rho)
+
         return path, path_length

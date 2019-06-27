@@ -1,46 +1,43 @@
 """Planning algorithm"""
 from time import time
 import numpy as np
-from graph import Graph
-from ant import EAlg
-from tools import get_distance_proj
+from tools import get_coord
+from tools import get_distance
 
-def planning(graph: Graph, model: EAlg, number_of_targets):
+def planning(size, model, number_of_targets):
     """Returns list with robot's paths to targets and list of lenghts this paths"""
     robots = []
     targets = []
-    x_max, y_max = graph.get_size()
 
     for it in range(number_of_targets):
         while True:
-            robot = [np.random.randint(low=0, high=x_max),
-                     np.random.randint(low=0, high=y_max)]
+            robot = np.random.randint(low=0, high=size ** 2)
             if robot not in robots:
-                if robot not in targets:
-                    robots.append(robot)
-                    break
+                robots.append(robot)
+                break
         while True:
-            target = [np.random.randint(low=0, high=x_max),
-                     np.random.randint(low=0, high=y_max)]
-            if target not in robots:
-                if target not in targets:
-                    targets.append(target)
-                    break
+            target = np.random.randint(low=0, high=size ** 2)
+            if target not in (targets and robots):
+                targets.append(target)
+                break
+
+    time_dic = {}
+    ant_start = time()
 
     costs = [[0.0 for x in range(number_of_targets)] for y in range(number_of_targets)]
     for it in range(number_of_targets):
         for jt in range(number_of_targets):
-            costs[it][jt] = get_distance_proj(robots[it], targets[jt])
-
-    time_dic = {}
+            costs[it][jt] = get_distance(get_coord(robots[it], size), get_coord(targets[jt], size), model.map_)
 
     plan_start = time()
+    time_dic["AntColony"] = round(plan_start - ant_start, 3)
 
     opt_paths = []
     opt_costs = []
     opt_pairs = []
 
     have_pair = np.zeros(number_of_targets)
+
     while not all(have_pair):
         it = 0
         while True:
@@ -57,17 +54,14 @@ def planning(graph: Graph, model: EAlg, number_of_targets):
                 else: it += 1
             else: it += 1
 
-    ant_start = time()
-    time_dic["Planning"] = round(ant_start - plan_start, 3)
-
+    print(len(opt_pairs))
     for pair in opt_pairs:
-        path, cost = model.get_path(graph, robots[pair[0]], targets[pair[1]])
-        opt_paths.append(path)
+        cost, path = model.run(robots[pair[0]], targets[pair[1]])
+        opt_paths.append([get_coord(it, size) for it in path])
         opt_costs.append(cost)
 
 
-
-    time_dic["AntColony"] = time() - ant_start
+    time_dic["Planning"] = round(time() - plan_start, 7)
     time_dic["Whole"] = round(time_dic["AntColony"] + time_dic["Planning"], 3)
 
     return opt_paths, opt_costs, time_dic

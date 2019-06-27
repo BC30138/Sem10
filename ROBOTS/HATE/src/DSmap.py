@@ -2,29 +2,24 @@
 import math
 import numpy as np
 from tools import get_mean
-
-# from tools import get_conj
-# from tools import get_distance_proj
-# from tools import get_distance
+from tools import to_vector
 
 class DSmap:
     """class for diamond square algorithm"""
-    def __init__(self, n, m, R):
-        self.n = n
-        self.m = m
-        self.max_element = pow(2, math.ceil(math.log(max(n, m) - 1, 2)))
+    def __init__(self, size, R):
+        self.size = size
+        self.max_element = pow(2, math.ceil(math.log(size - 1, 2)))
         self.matrix = np.zeros((self.max_element + 1, self.max_element + 1))
-        self.height = (n + m) / 2
         self.max_dist_z = 0.0
         self.norm_matrix = np.zeros((self.max_element + 1, self.max_element + 1))
         self.R = R
 
     def generate(self):
         """main method"""
-        self.matrix[0][0] = np.random.uniform(low=0, high=self.height)
-        self.matrix[self.max_element][self.max_element] = np.random.uniform(low=0, high=self.height)
-        self.matrix[self.max_element][0] = np.random.uniform(low=0, high=self.height)
-        self.matrix[0][self.max_element] = np.random.uniform(low=0, high=self.height)
+        self.matrix[0][0] = np.random.uniform(low=0, high=self.size)
+        self.matrix[self.max_element][self.max_element] = np.random.uniform(low=0, high=self.size)
+        self.matrix[self.max_element][0] = np.random.uniform(low=0, high=self.size)
+        self.matrix[0][self.max_element] = np.random.uniform(low=0, high=self.size)
 
         side_length = self.max_element
         while side_length != 1:
@@ -50,7 +45,7 @@ class DSmap:
                     y_1 += side_length
                     y_2 += side_length
             side_length = int(side_length / 2)
-        self.matrix = self.matrix[0:self.n, 0:self.m]
+        self.matrix = self.matrix[0:self.size, 0:self.size]
         self.matrix = np.around(self.matrix, decimals=3)
         self.max_dist_z = np.amax(self.matrix) - np.amin(self.matrix)
         self.norm_matrix = self.matrix - np.amin(self.matrix)
@@ -113,5 +108,9 @@ class DSmap:
             y = y_1
         self.matrix[x][y] = get_mean(vertexes) + np.random.uniform(low=(- self.R * rad * 2), high=(self.R * rad * 2))
 
-    def get_norm_matrix(self):
+    def get_norm_map(self):
+        """get map in format for calculating"""
         return self.norm_matrix
+
+    def get_matrix(self):
+        return self.matrix
