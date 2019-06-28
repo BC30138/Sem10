@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage[12pt]{extsizes}
+\usepackage{xcolor,listings}
+\usepackage[left=30mm, top=20mm, right=20mm, bottom=20mm, nohead, footskip=10mm]{geometry}
+
+
+\usepackage[absolute,overlay]{textpos}
+\usepackage{indentfirst}
+\usepackage{float}
+\restylefloat{table}
+\usepackage{hyperref}
+\usepackage{mathtext}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usetikzlibrary{shapes,positioning,shadows,trees,automata,arrows.meta,shapes.geometric}
+\usepackage{pgf-pie}
+\usepackage{chngcntr}
+\usepackage{pdfpages}
+\usepackage{systeme}
+\usepackage{empheq}
+\counterwithin{figure}{section}
+
+\pagestyle{plain}
+
+\definecolor{String}{RGB}{134, 179, 0}
+\definecolor{KeyColor}{RGB}{160,0,102}
+
+\lstdefinestyle{style}{
+	aboveskip=0pt,
+	belowskip=10pt,
+	showspaces=false,
+	showstringspaces=false,
+	basicstyle=\ttfamily\footnotesize,
+	numbers=left,
+	texcl=true,
+	keywordstyle=\color{KeyColor},
+	identifierstyle=\color{black},
+	numberstyle=\scriptsize,
+	stringstyle=\color{String},
+	commentstyle=\color{gray},
+	frame=tb
+}
+
+\begin{document}
+    \thispagestyle{empty}
+	\begin{center}
+		Санкт-Петербургский политехнический университет Петра Великого\\
+		Институт прикладной математики и механики\\
+		Кафедра <<Телематика (при ЦНИИ РТК)>>\\
+		\vspace*{\fill}
+		\textbf{\Large{КУРСОВАЯ РАБОТА}}\\
+		\vspace{0.5cm}
+        \large{по дисциплине <<Семинар по роботизированным системам>>\\}
+        \large{на тему <<Муравьиный алгоритм и алгоритм коллективного распределения целей>>}\\
+        \vspace{1cm}
+        по направлению 02.04.01.02 <<Организация и управление суперкомпьютерными системами>>
+	\end{center}
+	\vspace{3cm}
+	\begin{tabular} {l l l}
+	\hspace{10cm} & Выполнил: & Титов А.И.\\
+	& Проверил: & Глазунов В.В.
+	\end{tabular}
+	\vspace*{\fill}
+	\begin{center}
+		Санкт-Петербург\\
+		2019
+    \end{center}
+    \newpage
+
+
+	\renewcommand\contentsname{Оглавление}
+	\tableofcontents
+
+	\newpage
+	\addcontentsline{toc}{section}{ПОСТАНОВКА ЗАДАЧИ}
+	\section*{ПОСТАНОВКА ЗАДАЧИ}
+
+    В рамках курсовой работы требуется реализовать алгоритмы для построения оптимальных путей от роботов до целей. Для этого требуется реализовать следующие алгоритмы:
+
+    \begin{enumerate}
+        \item Алгоритм для построения реалистичной карты среды Diamond-Square;
+        \item Алгоритм коллективного распределения целей
+    \end{enumerate}
+
+	\newpage
+    \section{Описание алгоритмов}
+
+    \subsection{Алгоритм Diamond-Square}
+
+    \subsection{Муравьиный алгоритм}
+
+    \subsection{Алгоритм коллективного распределения целей}
+
+    \newpage
+    \section{Программная реализация}
+
+	\newpage
+    \section{Результаты}
+
+    \newpage
+    \addcontentsline{toc}{section}{ЗАКЛЮЧЕНИЕ}
+    \section*{ЗАКЛЮЧЕНИЕ}
+
+    \newpage
+    \addcontentsline{toc}{section}{ЛИТЕРАТУРА}
+    \section*{ЛИТЕРАТУРА}
+
+
+    \newpage
+    \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ А. Исходный код}
+    \section*{ПРИЛОЖЕНИЕ А. Исходный код}
+
+    \newpage
+    \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ Б. Таблицы замеров времени}
+    \section*{ПРИЛОЖЕНИЕ Б. Таблицы замеров времени}
+
+    \newpage
+    \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ В. Графики решений}
+    \section*{ПРИЛОЖЕНИЕ В. Графики решений}
+
+\end{document}
