@@ -20,10 +20,12 @@ EALG_OBJ = EAlg(
 def main_test():
     """Main function \n
         Result of this I will use for report"""
-    sizes = (25, 50, 100, 250, 500, 1000)
+    # sizes = (25, 50, 100, 250, 500, 1000)
     # sizes = (5, 10)
-    targets_numbers = (5, 10, 20, 50)
+    sizes = {1000}
+    # targets_numbers = (5, 10, 20, 50)
     # targets_numbers = (5, 10)
+    targets_numbers = {50}
     prog_bar_it = 0
     bar = progressbar.ProgressBar(max_value=(len(sizes) * len(targets_numbers) * 10))
     for size in sizes:

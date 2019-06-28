@@ -33,6 +33,7 @@ def plot_paths(graph, paths, file_name):
         ax.plot(path[0][0], path[0][1], "ro", c="black")
         ax.plot(path[len(path) - 1][0], path[len(path) - 1][1], "ro", c="red")
     fig.savefig(file_name, dpi=100)
+    plt.close(fig)
 
 def plot_heuristic_d(graph, file_name):
     """Plot heuristic by distance in heatmap format"""
@@ -49,6 +50,7 @@ def plot_heatmap(matrix, file_name):
     fig.colorbar(ax)
     fig.set_size_inches(8.5, 8.5)
     fig.savefig(file_name, dpi=100)
+    plt.close(fig)
 
 def cdf(weights):
     """generate weights"""
