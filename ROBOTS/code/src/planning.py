@@ -5,7 +5,7 @@ from graph import Graph
 from ant import EAlg
 from tools import get_distance_proj
 
-def planning(prog_bar_it, bar, graph: Graph, model: EAlg, number_of_targets):
+def planning(prog_bar_it, bar_, graph: Graph, model: EAlg, number_of_targets):
     """Returns list with robot's paths to targets and list of lenghts this paths"""
     robots = []
     targets = []
@@ -21,7 +21,7 @@ def planning(prog_bar_it, bar, graph: Graph, model: EAlg, number_of_targets):
                     break
         while True:
             target = [np.random.randint(low=0, high=x_max),
-                     np.random.randint(low=0, high=y_max)]
+                      np.random.randint(low=0, high=y_max)]
             if target not in robots:
                 if target not in targets:
                     targets.append(target)
@@ -62,7 +62,7 @@ def planning(prog_bar_it, bar, graph: Graph, model: EAlg, number_of_targets):
 
     for pair in opt_pairs:
         prog_bar_it[0] += 1
-        bar[0].update(prog_bar_it[0])
+        bar_[0].update(prog_bar_it[0])
         path, cost = model.get_path(graph, robots[pair[0]], targets[pair[1]])
         opt_paths.append(path)
         opt_costs.append(cost)

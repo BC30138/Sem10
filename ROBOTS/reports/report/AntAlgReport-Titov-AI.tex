@@ -107,8 +107,11 @@
     \section*{ЗАКЛЮЧЕНИЕ}
 
     \newpage
-    \addcontentsline{toc}{section}{ЛИТЕРАТУРА}
-    \section*{ЛИТЕРАТУРА}
+	\renewcommand\refname{ЛИТЕРАТУРА}
+	\addcontentsline{toc}{section}{ЛИТЕРАТУРА}
+	\begin{thebibliography}{}
+		\bibitem{Plan} Каляев И.А. Модели и алгоритмы коллективного управления в группах роботов // Физматлит, 2009, 279с.
+	\end{thebibliography}
 
 
     \newpage
