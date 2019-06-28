@@ -26,8 +26,9 @@ def main_test():
     # targets_numbers = (5, 10, 20, 50)
     # targets_numbers = (5, 10)
     targets_numbers = {50}
-    prog_bar_it = 0
-    bar = progressbar.ProgressBar(max_value=(len(sizes) * len(targets_numbers) * 10))
+    prog_bar_it = [0]
+    max_val = sum(targets_numbers) * len(sizes) * 10
+    bar = [progressbar.ProgressBar(maxval=max_val).start()]
     for size in sizes:
         for targets_num in targets_numbers:
             time_file_path = "data/time/" + str(size) + "x" + str(size) + "/" + str(targets_num) + ".data"
@@ -41,11 +42,9 @@ def main_test():
             opt_paths = []
             graphs = []
             for map_it in range(10):
-                prog_bar_it += 1
-                bar.update(prog_bar_it)
                 graph = Graph(size, size, 0.3, 0.1)
                 graph.generate()
-                path, _, alg_time = planning(graph, EALG_OBJ, targets_num)
+                path, _, alg_time = planning(prog_bar_it, bar, graph, EALG_OBJ, targets_num)
                 opt_paths.append(path)
                 graphs.append(graph)
                 ant_times.append(alg_time["AntColony"])
@@ -87,14 +86,18 @@ def examples_of_data():
 def dev_test():
     """Function for development \n
         I use it for testing components"""
-    size = 25
+    size = 1000
     graph = Graph(size, size, 0.3, 0.2)
     graph.generate()
-    opt_paths, _, alg_time = planning(graph, EALG_OBJ, 50)
-    plot_heuristic_d(graph, "data/heuristics/heuristic_d.png")
-    plot_pheromone(graph, "data/heuristics/pheromone.png")
+
+    prog_bar_it = [0]
+    max_val = 50
+    bar = [progressbar.ProgressBar(maxval=max_val).start()]
+    opt_paths, _, alg_time = planning(prog_bar_it, bar, graph, EALG_OBJ, 50)
+    # plot_heuristic_d(graph, "data/heuristics/heuristic_d.png")
+    # plot_pheromone(graph, "data/heuristics/pheromone.png")
     print(alg_time)
-    plot_paths(graph, opt_paths, "data/path/test.png")
+    # plot_paths(graph, opt_paths, "data/path/test.png")
 
 # examples_of_data()
 # dev_test()

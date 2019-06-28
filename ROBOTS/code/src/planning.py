@@ -5,7 +5,7 @@ from graph import Graph
 from ant import EAlg
 from tools import get_distance_proj
 
-def planning(graph: Graph, model: EAlg, number_of_targets):
+def planning(prog_bar_it, bar, graph: Graph, model: EAlg, number_of_targets):
     """Returns list with robot's paths to targets and list of lenghts this paths"""
     robots = []
     targets = []
@@ -61,6 +61,8 @@ def planning(graph: Graph, model: EAlg, number_of_targets):
     time_dic["Planning"] = round(ant_start - plan_start, 3)
 
     for pair in opt_pairs:
+        prog_bar_it[0] += 1
+        bar[0].update(prog_bar_it[0])
         path, cost = model.get_path(graph, robots[pair[0]], targets[pair[1]])
         opt_paths.append(path)
         opt_costs.append(cost)
