@@ -24,12 +24,14 @@
 \usepackage{systeme}
 \usepackage{empheq}
 \usepackage{subcaption}
-\counterwithin{figure}{section}
+\numberwithin{equation}{section}
+\counterwithout{figure}{section}
 
 \pagestyle{plain}
 
 \definecolor{String}{RGB}{134, 179, 0}
 \definecolor{KeyColor}{RGB}{160,0,102}
+
 
 \captionsetup[lstlisting]{
 	singlelinecheck=false,
@@ -116,26 +118,162 @@
 
 	\begin{enumerate}
 		\item Генерация 10 различных карт для каждого размера из: 25x25, 50x50, 100x100, 250x250, 500x500, 1000x1000;
-		\item На каждой из карт сгенерированных генерируются наборы роботов и, соответственно, цели к ним в численности: 5, 10, 20, 50 (наборов каждого размера для каждой карты тоже должно быть по 10, но из соображений производительности этот пункт опущен);
+		\item На каждой из сгенерированных карт создаются наборы роботов и, соответственно, цели к ним в численности: 5, 10, 20, 50 (наборов каждого размера для каждой карты тоже должно быть по 10, но из соображений производительности этот пункт опущен);
 		\item Для заданных наборов распределяются цели по роботам;
-		\item Для каждого построенного набора строятся графики, отображающие зависимость времени выполнения программы от размеров карт и численности роботов. (В изначальном задании указано построить график содержащий все измеренные времена, но для наглядности графики строятся только средних элементов замеров, а полную картину отражают таблицы в \hyperref[sec:time]{ПРИЛОЖЕНИЕ Б});
+		\item Для каждого построенного набора строятся графики, отображающие зависимость времени выполнения программы от размеров карт и численности роботов. (В изначальном задании указано построить график, содержащий все измеренные времена, но для наглядности графики строятся только для средних элементов замеров, а полную картину отражают таблицы в \hyperref[sec:time]{ПРИЛОЖЕНИЕ Б});
 		\item Теоретическое исследование реализуемого функционала.
 	\end{enumerate}
 
 	\newpage
-    \section{Описание алгоритмов}
+	\section{Описание алгоритмов}
 
-    \subsection{Алгоритм Diamond-Square}
+		В данной главе представлен разбор теоретических принципов работы реализуемых алгоритмов.
 
-    \subsection{Муравьиный алгоритм}
+		\subsection{Алгоритм Diamond-Square}
 
-    \subsection{Алгоритм коллективного распределения целей}
+			В данной работе для процедурной генерации реалистичной карты местности используется алгоритм Diamond-Square\cite{DS}. Прочие применяемые алгоритмы описаны в \cite{terrain}.
+
+			Алгоритм имеет ограничения на размеры получаемой карты высот - $(2^{n} + 1)\times(2^{n} + 1)$.
+
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=\textwidth]{data/DS.png}
+				\vspace{-0.5cm}
+				\caption{Этапы работы алгоритма Diamond-Square}\label{fig:DS}
+			\end{figure}
+
+			Алгоритм включает в себя следующие этапы (отображены на \hyperref[fig:DS]{Рис. 1}):
+
+			\begin{enumerate}[a)]
+				\item \textbf{Инициализация}
+					Пусть $n$ и $m$ - заданные ширина и высота требуемой карты высот. Чтобы использовать алгоритм для заданного размера требуется создать карту с шириной и высотой равными:
+					\[ n' = 2^{\log_2 (max(n,m) - 1)} + 1 \]
+					Для каждого углового элемента полученной карты генерируем случайное значение. Диапазон случайных значений в общем случае может быть любым, но в данной работе возьмем его равным $[0, \frac{n + m}{2}]$. В целом данный диапазон не влияет на производительность алгоритма или на возможность его реализации, он может быть и отрицательным, как, например в случае, когда 0 - это уровень моря.
+				\item \textbf{Этап Diamond}
+					На этом этапе находится центральная точка рассматриваемого квадрата, как среднее значение от его углов:
+					\[ m[s/2][s/2] = \frac{m[0][0] + m[0][s] + m[s][0] + m[s][s]}{4} + \tau \]
+					где $m$ - это рассматриваемый квадрат, $s$ - количество узлов на ребре квадрата. $\tau$ - случайная величина (шум), диапазон случайной величины $[-R * s, R * s]$, где $R$ - задаваемый коэффициент.
+				\item \textbf{Этап Square}
+					Здесь рассматривается ромб с вершинами, вычисленными на этапе Diamond. Подход схожий с этапом Diamond, только теперь высчитываются центральные элементы ребер квадрата по двум углам квадрата и двум центральным точкам, одна из которых - центр рассматриваемого квадрата, а вторая центр соседствующего квадрата. Существует проблема на краях генерируемой карты, ведь в таком случае нет центра соседствующего квадрата. В данной работе было принято следующее решение: при отсутствии соседствующего квадрата брать среднее от 3-ех точек - двух вершин и центра рассматриваемого квадрата.
+				\item[d-e)] \textbf{Итерации по рассматриваемым квадратам}
+					Итерации проходят по строкам и столбцам с шагом $s$:\\
+					В каждой итерации по столбцам происходят этапы Square и Diamond, если итерация упирается в край карты, то происходит переход на следующую строку. При достижении правого нижнего угла матрицы значение $s$ обновляется $s = s / 2$ и итерации по строкам и столбцам происходят заново.\\
+					Критерий останова: $s = 2$.
+			\end{enumerate}
+
+			После выполнения приведенных выше этапов построенная карта обрезается до размера $n \times m$.
+
+		\subsection{Муравьиный алгоритм}
+
+			Для построения путей роботов до целей был выбран муравьиный алгоритм \cite{ant}. Алгоритм имеет хорошую практическую применимость в такого рода задачах \cite{ant}\cite{ant1}\cite{ant2}. Существуют и прочие алгоритмы, которые весьма подробно описаны в \cite{path}.
+
+			Основная идея алгоритма заключается в следующем:\\ Запустить на карту некоторую популяцию муравьев, которые должны дойти от начальной точки до конечной, при том каждую вершину пути муравей выбирает основываясь на концентрации феромона на вершине. После того, как все муравьи построили путь - они обновляют концентрацию феромона для каждой вершины, которая была задействована в построении пути. Далее запускается следующая популяция муравьев, которая основывается на уже обновленных значениях концентрации феромона.
+
+			Данный алгоритм имеет низкую производительность при использовании его в чистом виде, однако при применении эвристик можно добиться значительного улучшения производительности.
+
+			Основные этапы реализуемого муравьиного алгоритма:
+			\begin{itemize}
+				\item Изначально генерируется матрица, содержащая значения концентрации феромонов $\tau_{ij}$  . Для простоты матрица заполняется случайными очень маленькими значениями (в общем случае изначально значения должны быть равными 0).
+			\end{itemize}
+		\subsection{Алгоритм коллективного распределения целей}
 
     \newpage
-    \section{Программная реализация}
+	\section{Программная реализация}
 
 	\newpage
-    \section{Результаты}
+	\section{Результаты}
+
+		\subsection{Diamond-Square}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/maps_example/250x250.png}
+				\vspace{-0.5cm}
+				\caption{Карта размера 250x250}\label{fig:map1}
+			\end{figure}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/maps_example/500x500.png}
+				\vspace{-0.5cm}
+				\caption{Карта размера 500x500}\label{fig:map2}
+			\end{figure}
+
+		\subsection{Муравьиный алгоритм}
+
+			\begin{figure}[H]
+				\vspace{-0.5cm}
+				\centering
+				\begin{subfigure}[b]{0.49\textwidth}
+					\includegraphics[width=\textwidth]{data/heuristics_example/heuristic_d_250x250.png}
+					\caption*{Карта 250x250, Цель (50, 80)}
+				\end{subfigure}
+				\begin{subfigure}[b]{0.49\textwidth}
+					\includegraphics[width=\textwidth]{data/heuristics_example/heuristic_d_500x500.png}
+					\caption*{Карта 500x500, Цель (345, 345)}
+				\end{subfigure}
+				\caption{Эвристики по расстоянию}\label{fig:heur_d}
+			\end{figure}
+
+			\begin{figure}[H]
+				\vspace{-0.5cm}
+				\centering
+				\begin{subfigure}[b]{0.49\textwidth}
+					\includegraphics[width=\textwidth]{data/heuristics_example/pheromone_250x250.png}
+					\caption*{Карта 250x250, Цель (50, 80)}
+				\end{subfigure}
+				\begin{subfigure}[b]{0.49\textwidth}
+					\includegraphics[width=\textwidth]{data/heuristics_example/pheromone_500x500.png}
+					\caption*{Карта 500x500, Цель (345, 345)}
+				\end{subfigure}
+				\caption{Начальная концентрация феромонов}\label{fig:pher}
+			\end{figure}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/path_example/250x250.png}
+				\vspace{-0.5cm}
+				\caption{Построенный путь для робота на карте размера 250x250}\label{fig:rob1}
+			\end{figure}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/path_example/500x500.png}
+				\vspace{-0.5cm}
+				\caption{Построенный путь для робота на карте размера 500x500}\label{fig:rob2}
+			\end{figure}
+
+		\subsection{Коллективное распределение целей}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/mean_paths/100x100/10.png}
+				\vspace{-0.5cm}
+				\caption{Построенные пути для 10 роботов на карте размера 100x100}\label{fig:5robs}
+			\end{figure}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=0.6\textwidth]{data/mean_paths/1000x1000/50.png}
+				\vspace{-0.5cm}
+				\caption{Построенные пути для 50 роботов на карте размера 1000x1000}\label{fig:50robs}
+			\end{figure}
+
+		\subsection{Замеры времени работы}
+
+			\begin{figure}[H]
+				\centering
+				\vspace{-0.5cm}
+				\includegraphics[width=\textwidth]{data/mean_surface.png}
+				\vspace{-0.5cm}
+				\caption{Зависимость времени вычислений (с.) от размера карты и количества роботов}\label{fig:time_surface}
+			\end{figure}
 
     \newpage
     \addcontentsline{toc}{section}{ЗАКЛЮЧЕНИЕ}
@@ -150,6 +288,8 @@
 		\bibitem{path} Gregor Klančar. Path Planning // Wheeled Mobile Robotics, 2017, pp. 161-206
 		\bibitem{DS} Jacob Olsen. Realtime Procedural Terrain Generation // University of Southern Denmark, 2004, pp. 20
 		\bibitem{ant} M. Brand, M. Masuda, N. Wehner, X.-H. Yu. Ant colony optimization algorithm for robot path planning // Computer Design and Applications (ICCDA) 2010 International Conference on, vol. 3, 2010, pp. 436-440.
+		\bibitem{ant1} Alpa Reshamwala, Deepika P Vinchurkar. Robot Path Planning using An Ant Colony Optimization Approach: A Survey // (IJARAI) International Journal of Advanced Research in Artificial Intelligence, Vol. 2, No.3, 2013, pp. 7
+		\bibitem{ant2} Sangita Sarangi. Optimization of Robot Motion Planning using Ant Colony Optimization // National Institute of Technology, Rourkela, 2011, pp. 81
 	\end{thebibliography}
 
 

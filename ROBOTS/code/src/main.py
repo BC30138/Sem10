@@ -6,6 +6,7 @@ from tools import plot_heuristic_d
 from tools import plot_pheromone
 from tools import plot_time_correlation
 from tools import generate_tables
+from tools import plot_path
 from graph import Graph
 from ant import EAlg
 from planning import planning
@@ -71,13 +72,17 @@ def main_test():
 
 def examples_of_data():
     """Necessary for report"""
-    size = 250
-    graph = Graph(size, size, 0.3, 0.1)
-    graph.generate()
-    graph.init_pheromone_n_heuristics([50, 80])
-    plot_heuristic_d(graph, "data/heuristics/heuristic_d.png")
-    plot_pheromone(graph, "data/heuristics/pheromone.png")
-    plot_map(graph, "data/maps/map_250.png")
+    sizes = [250, 500]
+    end_points = [[50, 80],
+                  [345, 345]]
+    for it, _ in enumerate(sizes):
+        graph = Graph(sizes[it], sizes[it], 0.3, 0.1)
+        graph.generate()
+        graph.init_pheromone_n_heuristics(end_points[it])
+        caption = str(sizes[it]) + "x" + str(sizes[it])
+        plot_heuristic_d(graph, "data/heuristics_example/heuristic_d_" + caption + ".png")
+        plot_pheromone(graph, "data/heuristics_example/pheromone_" + caption + ".png")
+        plot_map(graph, "data/maps_example/" + caption + ".png")
 
 def dev_test():
     """Function for development \n
@@ -85,13 +90,33 @@ def dev_test():
     size = 1000
     graph = Graph(size, size, 0.3, 0.2)
     graph.generate()
-
     prog_bar_it = [0]
     max_val = 50
     bar_ = [progressbar.ProgressBar(maxval=max_val).start()]
     opt_paths, _, alg_time = planning(prog_bar_it, bar_, graph, EALG_OBJ, 50)
     print(alg_time)
     plot_paths(graph, opt_paths, "data/mean_paths/test.png")
+
+def single_path_test():
+    """plot single paths for different maps"""
+    sizes = [250, 500]
+    robots = [[50, 80],
+              [200, 460]]
+    targets = [[200, 180],
+               [300, 100]]
+    file = open("data/path_example/costs.data", "w+")
+    for it, _ in enumerate(sizes):
+        graph = Graph(sizes[it], sizes[it], 0.3, 0.2)
+        graph.generate()
+        path, cost = EALG_OBJ.get_path(graph, robots[it], targets[it])
+        caption = str(sizes[it]) + "x" + str(sizes[it])
+        plot_path(graph, path, "data/path_example/" + caption + ".png")
+        file.write(caption + ":\t" + str(cost) + "\n")
+    file.close()
+
+
+
+
 
 def time_correlation():
     """plot surface with mean times by ready data"""
@@ -100,6 +125,7 @@ def time_correlation():
     plot_time_correlation(sizes, targets_numbers)
     generate_tables(sizes, targets_numbers)
 
+single_path_test()
 # examples_of_data()
 # dev_test()
 # main_test()

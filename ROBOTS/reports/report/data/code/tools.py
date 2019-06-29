@@ -40,7 +40,7 @@ def plot_map(graph, file_name):
     plot_heatmap(graph.get_matrix(), file_name)
 
 def plot_paths(graph, paths, file_name):
-    """Plot path on map"""
+    """Plot paths on map"""
     fig = plt.figure()
     ax = fig.add_subplot(111)
     pl = ax.imshow(graph.get_matrix(), cmap=plt.get_cmap("gist_earth"))
@@ -50,6 +50,19 @@ def plot_paths(graph, paths, file_name):
         ax.plot([x for x, y in path], [y for x, y in path], linewidth=2.0, c="orange")
         ax.plot(path[0][0], path[0][1], "ro", c="black")
         ax.plot(path[len(path) - 1][0], path[len(path) - 1][1], "ro", c="red")
+    fig.savefig(file_name, dpi=100)
+    plt.close(fig)
+
+def plot_path(graph, path, file_name):
+    """Plot single path on map"""
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    pl = ax.imshow(graph.get_matrix(), cmap=plt.get_cmap("gist_earth"))
+    fig.colorbar(pl)
+    fig.set_size_inches(8.5, 8.5)
+    ax.plot([x for x, y in path], [y for x, y in path], linewidth=2.0, c="orange")
+    ax.plot(path[0][0], path[0][1], "ro", c="black")
+    ax.plot(path[len(path) - 1][0], path[len(path) - 1][1], "ro", c="red")
     fig.savefig(file_name, dpi=100)
     plt.close(fig)
 
