@@ -6,55 +6,6 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from mpl_toolkits.mplot3d import Axes3D
 
-def generate_tables(sizes, targets_numbers):
-    for it, _ in enumerate(sizes):
-        matrix_ant = np.zeros((11, len(targets_numbers)))
-        matrix_plan = np.zeros((11, len(targets_numbers)))
-        matrix_full = np.zeros((11, len(targets_numbers)))
-        caption = str(sizes[it]) + "x" + str(sizes[it])
-        root = "data/time/" + caption + "/"
-        for jt, _ in enumerate(targets_numbers):
-            file_path = root + str(targets_numbers[jt]) + ".data"
-            file = open(file_path)
-            lines = file.readlines()
-            for kt in range(3,13):
-                matrix_ant[kt - 3][jt] = float(lines[kt].rstrip().rsplit("\t")[1])
-                matrix_plan[kt - 3][jt] = float(lines[kt].rstrip().rsplit("\t")[2])
-                matrix_full[kt - 3][jt] = float(lines[kt].rstrip().rsplit("\t")[3])
-            matrix_ant[10][jt] = float(lines[13].rstrip().rsplit("\t")[1])
-            matrix_plan[10][jt] = float(lines[14].rstrip().rsplit("\t")[2])
-            matrix_full[10][jt] = float(lines[15].rstrip().rsplit("\t")[3])
-        print_tex_table(matrix_ant, targets_numbers, "data/tex_tables/ant_time/" + caption + ".tex", "Размер карты: " + caption)
-        print_tex_table(matrix_plan, targets_numbers, "data/tex_tables/plan_time/" + caption + ".tex", "Размер карты: " + caption)
-        print_tex_table(matrix_full, targets_numbers, "data/tex_tables/full_time/" + caption + ".tex", "Размер карты: " + caption)
-
-def print_tex_table(matrix, targets_numbers, file_name, caption):
-    """print latex formated table from matrix"""
-    file = open(file_name, "w+")
-    file.write("\\begin{table}[H]\n")
-    file.write("\\centering\n")
-    file.write("\\begin{tabular}{|r|l|l|l|l|}\n")
-    file.write("\\hline\n")
-    line = "№ карты\\textbackslash Кол-во роботов"
-    for num in targets_numbers:
-        line += " & \\textbf{" + str(num) + "}"
-    line += "\\\\ \\hline\n"
-    file.write(line)
-    for it in range(matrix.shape[0] - 1):
-        line = str(it + 1)
-        for jt in range(matrix.shape[1]):
-            line += " & " + str(round(matrix[it][jt], 5))
-        line += "\\\\ \\hline\n"
-        file.write(line)
-    line = "Средний элемент"
-    for jt in range(matrix.shape[1]):
-        line += " & " + str(round(matrix[10][jt], 5))
-    line += "\\\\ \\hline\n"
-    file.write(line)
-    file.write("\\end{tabular}\n")
-    file.write("\\caption*{" + caption + "}\n")
-    file.write("\\end{table}\n")
-
 def plot_surface(matrix, sizes, targets_numbers, file_name):
     """Plot 3d surface"""
     rcParams.update({'font.size': 16})

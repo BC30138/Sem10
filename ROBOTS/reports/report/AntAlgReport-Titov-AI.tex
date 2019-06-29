@@ -23,12 +23,20 @@
 \usepackage{pdfpages}
 \usepackage{systeme}
 \usepackage{empheq}
+\usepackage{subcaption}
 \counterwithin{figure}{section}
 
 \pagestyle{plain}
 
 \definecolor{String}{RGB}{134, 179, 0}
 \definecolor{KeyColor}{RGB}{160,0,102}
+
+\captionsetup[lstlisting]{
+	singlelinecheck=false,
+	margin=3pt,
+	font=,skip=5pt,
+	font={bf}
+}
 
 \lstdefinestyle{style}{
 	aboveskip=0pt,
@@ -37,7 +45,9 @@
 	showstringspaces=false,
 	basicstyle=\ttfamily\footnotesize,
 	numbers=left,
-	texcl=true,
+	% texcl=true,
+	breaklines=true,
+	postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 	keywordstyle=\color{KeyColor},
 	identifierstyle=\color{black},
 	numberstyle=\scriptsize,
@@ -80,12 +90,37 @@
 	\addcontentsline{toc}{section}{ПОСТАНОВКА ЗАДАЧИ}
 	\section*{ПОСТАНОВКА ЗАДАЧИ}
 
-    В рамках курсовой работы требуется реализовать алгоритмы для построения оптимальных путей от роботов до целей. Для этого требуется реализовать следующие алгоритмы:
+	Целью курсовой работы является реализация и исследование алгоритмов для построения оптимальных путей роботов до целей. Далее под роботом, для простоты, будет иметься в виду непосредственно начальная координата пути, а под целью, соответственно, конечная координата.
 
-    \begin{enumerate}
-        \item Алгоритм для построения реалистичной карты среды Diamond-Square;
-        \item Алгоритм коллективного распределения целей
-    \end{enumerate}
+	Таким образом, требуется создать карту местности, на которой помещается набор роботов и набор целей, после чего каждому роботу оптимально назначить цель и построить путь до нее.
+
+	Для этого требуется реализовать следующие алгоритмы:
+
+    \begin{itemize}
+        \item Алгоритм для процедурного построения реалистичной карты местности \cite{terrain};
+        \item Алгоритм коллективного распределения целей \cite{plan};
+        \item Алгоритм поиска пути \cite{path}.
+	\end{itemize}
+
+	Для генерации реалистичной карты среды выбран алгоритм Diamond-Square \cite{DS}. Алгоритм коллективного распределения целей описан в \cite{plan} в главе <<Алгоритм коллективного улучшения плана 3.7>> на стр. 102. Для вычисления пути от робота до цели рассматривается муравьиный алгоритм \cite{ant}.
+
+	Выполняются следующие задачи для достижения цели:
+	\begin{enumerate}
+		\item Реализация алгоритма Diamond-Square;
+		\item Реализация муравьиного алгоритма;
+		\item Реализация алгоритма коллективного распределения целей;
+		\item Исследования реализованного функционала.
+	\end{enumerate}
+
+	Реализация осуществляется на языке Python. Исследование реализованного функционала заключается в следующем:
+
+	\begin{enumerate}
+		\item Генерация 10 различных карт для каждого размера из: 25x25, 50x50, 100x100, 250x250, 500x500, 1000x1000;
+		\item На каждой из карт сгенерированных генерируются наборы роботов и, соответственно, цели к ним в численности: 5, 10, 20, 50 (наборов каждого размера для каждой карты тоже должно быть по 10, но из соображений производительности этот пункт опущен);
+		\item Для заданных наборов распределяются цели по роботам;
+		\item Для каждого построенного набора строятся графики, отображающие зависимость времени выполнения программы от размеров карт и численности роботов. (В изначальном задании указано построить график содержащий все измеренные времена, но для наглядности графики строятся только средних элементов замеров, а полную картину отражают таблицы в \hyperref[sec:time]{ПРИЛОЖЕНИЕ Б});
+		\item Теоретическое исследование реализуемого функционала.
+	\end{enumerate}
 
 	\newpage
     \section{Описание алгоритмов}
@@ -110,20 +145,173 @@
 	\renewcommand\refname{ЛИТЕРАТУРА}
 	\addcontentsline{toc}{section}{ЛИТЕРАТУРА}
 	\begin{thebibliography}{}
-		\bibitem{Plan} Каляев И.А. Модели и алгоритмы коллективного управления в группах роботов // Физматлит, 2009, 279с.
+		\bibitem{terrain} Miguel Monteiro de Sousa Frade. Genetic Terrain Programming // Universidad de Extremadura, 2008, pp. 103
+		\bibitem{plan} Каляев И.А. Модели и алгоритмы коллективного управления в группах роботов // Физматлит, 2009, 279с.
+		\bibitem{path} Gregor Klančar. Path Planning // Wheeled Mobile Robotics, 2017, pp. 161-206
+		\bibitem{DS} Jacob Olsen. Realtime Procedural Terrain Generation // University of Southern Denmark, 2004, pp. 20
+		\bibitem{ant} M. Brand, M. Masuda, N. Wehner, X.-H. Yu. Ant colony optimization algorithm for robot path planning // Computer Design and Applications (ICCDA) 2010 International Conference on, vol. 3, 2010, pp. 436-440.
 	\end{thebibliography}
 
 
     \newpage
     \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ А. Исходный код}
-    \section*{ПРИЛОЖЕНИЕ А. Исходный код}
+	\section*{ПРИЛОЖЕНИЕ А. Исходный код} \label{sec:code}
+	Ниже приведен исходный код на языке Python
+	\lstinputlisting[language = python, style=style, title={main.py}]{data/code/main.py}
+	\lstinputlisting[language = python, style=style, title={graph.py}]{data/code/graph.py}
+	\lstinputlisting[language = python, style=style, title={ant.py}]{data/code/ant.py}
+	\lstinputlisting[language = python, style=style, title={planning.py}]{data/code/planning.py}
+	\lstinputlisting[language = python, style=style, title={tools.py}]{data/code/tools.py}
+
 
     \newpage
     \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ Б. Таблицы замеров времени}
-    \section*{ПРИЛОЖЕНИЕ Б. Таблицы замеров времени}
+	\section*{ПРИЛОЖЕНИЕ Б. Таблицы замеров времени} \label{sec:time}
+	Ниже приведены замеры времени (c.) муравьиного алгоритма для каждой сгенерированной карты и каждого количества роботов:
+
+	\input{data/tex_tables/ant_time/25x25.tex}
+	\input{data/tex_tables/ant_time/50x50.tex}
+	\input{data/tex_tables/ant_time/100x100.tex}
+	\input{data/tex_tables/ant_time/250x250.tex}
+	\input{data/tex_tables/ant_time/500x500.tex}
+	\input{data/tex_tables/ant_time/1000x1000.tex}
+
+	Ниже приведены замеры времени (c.) алгоритма планирования для каждой сгенерированной карты и каждого количества роботов:
+
+	\input{data/tex_tables/plan_time/25x25.tex}
+	\input{data/tex_tables/plan_time/50x50.tex}
+	\input{data/tex_tables/plan_time/100x100.tex}
+	\input{data/tex_tables/plan_time/250x250.tex}
+	\input{data/tex_tables/plan_time/500x500.tex}
+	\input{data/tex_tables/plan_time/1000x1000.tex}
 
     \newpage
     \addcontentsline{toc}{section}{ПРИЛОЖЕНИЕ В. Графики решений}
-    \section*{ПРИЛОЖЕНИЕ В. Графики решений}
+	\section*{ПРИЛОЖЕНИЕ В. Графики решений} \label{sec:png}
+	Ниже представлены построенные пути с средним временем выполнения для разного числа роботов и разных размеров матриц (черным отмечены роботы, красным - цели):
+	\begin{table}[H]
+		\begin{tabular}{c c}
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/25x25/5.png}
+			\caption*{5 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/25x25/10.png}
+			\caption*{10 роботов}
+			\end{subfigure}
+			\\
+            \begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/25x25/20.png}
+			\caption*{20 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/25x25/50.png}
+			\caption*{50 роботов}
+			\end{subfigure}
+        \end{tabular}
+        \caption*{Размер карты: 25x25}
+	\end{table}
+
+	\begin{table}[H]
+		\begin{tabular}{c c}
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/50x50/5.png}
+			\caption*{5 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/50x50/10.png}
+			\caption*{10 роботов}
+			\end{subfigure}
+			\\
+            \begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/50x50/20.png}
+			\caption*{20 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/50x50/50.png}
+			\caption*{50 роботов}
+			\end{subfigure}
+        \end{tabular}
+        \caption*{Размер карты: 50x50}
+	\end{table}
+
+	\begin{table}[H]
+		\begin{tabular}{c c}
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/100x100/5.png}
+			\caption*{5 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/100x100/10.png}
+			\caption*{10 роботов}
+			\end{subfigure}
+			\\
+            \begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/100x100/20.png}
+			\caption*{20 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/100x100/50.png}
+			\caption*{50 роботов}
+			\end{subfigure}
+        \end{tabular}
+        \caption*{Размер карты: 100x100}
+	\end{table}
+
+	\begin{table}[H]
+		\begin{tabular}{c c}
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/250x250/5.png}
+			\caption*{5 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/250x250/10.png}
+			\caption*{10 роботов}
+			\end{subfigure}
+			\\
+            \begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/250x250/20.png}
+			\caption*{20 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/250x250/50.png}
+			\caption*{50 роботов}
+			\end{subfigure}
+        \end{tabular}
+        \caption*{Размер карты: 250x250}
+	\end{table}
+
+	\begin{table}[H]
+		\begin{tabular}{c c}
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/1000x1000/5.png}
+			\caption*{5 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/1000x1000/10.png}
+			\caption*{10 роботов}
+			\end{subfigure}
+			\\
+            \begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/1000x1000/20.png}
+			\caption*{20 роботов}
+			\end{subfigure}
+			&
+			\begin{subfigure}{0.5\linewidth}
+				\includegraphics[width = 1.0\columnwidth]{data/mean_paths/1000x1000/50.png}
+			\caption*{50 роботов}
+			\end{subfigure}
+        \end{tabular}
+        \caption*{Размер карты: 1000x1000}
+	\end{table}
 
 \end{document}

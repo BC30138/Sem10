@@ -5,7 +5,6 @@ from tools import plot_paths
 from tools import plot_heuristic_d
 from tools import plot_pheromone
 from tools import plot_time_correlation
-from tools import generate_tables
 from graph import Graph
 from ant import EAlg
 from planning import planning
@@ -98,9 +97,8 @@ def time_correlation():
     sizes = (25, 50, 100, 250, 500, 1000)
     targets_numbers = (5, 10, 20, 50)
     plot_time_correlation(sizes, targets_numbers)
-    generate_tables(sizes, targets_numbers)
 
 # examples_of_data()
 # dev_test()
-# main_test()
+main_test()
 # time_correlation()
