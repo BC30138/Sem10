@@ -73,8 +73,8 @@ def main_test():
 def examples_of_data():
     """Necessary for report"""
     sizes = [250, 500]
-    end_points = [[50, 80],
-                  [345, 345]]
+    end_points = [[200, 180],
+               [300, 100]]
     for it, _ in enumerate(sizes):
         graph = Graph(sizes[it], sizes[it], 0.3, 0.1)
         graph.generate()
@@ -82,7 +82,7 @@ def examples_of_data():
         caption = str(sizes[it]) + "x" + str(sizes[it])
         plot_heuristic_d(graph, "data/heuristics_example/heuristic_d_" + caption + ".png")
         plot_pheromone(graph, "data/heuristics_example/pheromone_" + caption + ".png")
-        plot_map(graph, "data/maps_example/" + caption + ".png")
+        # plot_map(graph, "data/maps_example/" + caption + ".png")
 
 def dev_test():
     """Function for development \n

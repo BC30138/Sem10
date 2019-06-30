@@ -11,12 +11,12 @@ from ant import EAlg
 from planning import planning
 
 EALG_OBJ = EAlg(
-    50,
+    80,
     10,
     1.0,
     1.0,
     0.9,
-    50
+    100
 )
 
 def main_test():

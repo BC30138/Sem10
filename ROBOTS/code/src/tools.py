@@ -126,7 +126,7 @@ def plot_pheromone(graph, file_name):
 def plot_heatmap(matrix, file_name):
     """Plot 2d heat map"""
     fig = plt.figure()
-    ax = plt.imshow(matrix, cmap=plt.get_cmap("gist_earth"))
+    ax = plt.imshow(np.transpose(matrix), cmap=plt.get_cmap("gist_earth"))
     fig.colorbar(ax)
     fig.set_size_inches(8.5, 8.5)
     fig.savefig(file_name, dpi=100)
