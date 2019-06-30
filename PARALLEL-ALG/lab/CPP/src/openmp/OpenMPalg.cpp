@@ -81,9 +81,10 @@ void OpenMPalg::solve(int thread_num) {
 
         #pragma omp barrier
 
+        
         g_thread[row_num - 1] = c_thread[row_num - 2];
         // unsigned long long lim = 0;
-        for (int r_it = row_num - 3; r_it >= 0; r_it --) {
+        for (long long r_it = row_num - 3; r_it >= 0; r_it --) {
             tmp = c_thread[r_it] / a_thread[r_it + 1];
             d_thread[r_it] = d_thread[r_it] - d_thread[r_it + 1] * tmp;
             g_thread[r_it + 1] = g_thread[r_it + 1] - g_thread[r_it + 2] * tmp;
