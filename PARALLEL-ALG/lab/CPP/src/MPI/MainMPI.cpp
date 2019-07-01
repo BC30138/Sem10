@@ -1,11 +1,11 @@
 #include"MPIalg.h"
 #include<fstream>
-#include<ctime> 
+#include<ctime>
 
 using namespace std;
 
 void test_1(unsigned long n) {
-    PthreadsAlg test(n);
+    MPIalg test(n);
 
     ofstream out("data/MPItime.data");
     out << "size: " << n << endl;
@@ -19,15 +19,15 @@ void test_1(unsigned long n) {
 
 void test_2(int threads) {
     // test.export_data("data/test_matrix.data");
-    PthreadsAlg test;
+    MPIalg test;
     test.read_data("data/test_matrix.data");
     test.solve(threads);
-    test.show_result();
+    // test.show_result();
 }
 
 int main() {
     unsigned long n = 3500000;
-    test_1(n);
-    // test_2(2);
+    // test_1(n);
+    test_2(2);
     return 0;
 }

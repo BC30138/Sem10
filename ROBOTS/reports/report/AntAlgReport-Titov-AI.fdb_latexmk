@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1561854455 "/Users/bc30138/Documents/CODE/Studying-Sem10/ROBOTS/reports/report/AntAlgReport-Titov-AI.tex" "AntAlgReport-Titov-AI.pdf" "AntAlgReport-Titov-AI" 1561854460
-  "/Users/bc30138/Documents/CODE/Studying-Sem10/ROBOTS/reports/report/AntAlgReport-Titov-AI.tex" 1561854443 48691 a86833c2c5d9dc780afc4ea8139d280c ""
+["pdflatex"] 1561855130 "/Users/bc30138/Documents/CODE/Studying-Sem10/ROBOTS/reports/report/AntAlgReport-Titov-AI.tex" "AntAlgReport-Titov-AI.pdf" "AntAlgReport-Titov-AI" 1561855135
+  "/Users/bc30138/Documents/CODE/Studying-Sem10/ROBOTS/reports/report/AntAlgReport-Titov-AI.tex" 1561855130 48689 75e2d04c9b9d66292fc280104e30e96c ""
   "/Users/bc30138/Library/texlive/2017/texmf-var/fonts/tfm/lh/lh-t2a/labx1200.tfm" 1522942842 3308 eee81981029f67083258db36df06e523 ""
   "/Users/bc30138/Library/texlive/2017/texmf-var/fonts/tfm/lh/lh-t2a/labx1440.tfm" 1522943044 3304 6a543c07045572737981351171e0505e ""
   "/Users/bc30138/Library/texlive/2017/texmf-var/fonts/tfm/lh/lh-t2a/labx1728.tfm" 1522942851 3312 d199be9bd555944e2403193d58a0256a ""
@@ -222,10 +222,10 @@
   "/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1538566451 2973889 b66c93a35d6a7036d1ec2073b547ff87 ""
   "/usr/local/texlive/2017/texmf-var/web2c/pdftex/pdflatex.fmt" 1538566531 4222471 15b51d425ac95243be9e9c217bb73c40 ""
   "/usr/local/texlive/2017/texmf.cnf" 1495593465 577 2b71d4d888f9e5560b2e99985915a9fa ""
-  "AntAlgReport-Titov-AI.aux" 1561854459 14600 f2b3ec0335f4570bc1f3e9042b95c4ba ""
-  "AntAlgReport-Titov-AI.out" 1561854459 3522 5997828a71820dd5cda6dab3d9e3b9fa ""
-  "AntAlgReport-Titov-AI.tex" 1561854443 48691 a86833c2c5d9dc780afc4ea8139d280c ""
-  "AntAlgReport-Titov-AI.toc" 1561854459 4877 803b39eecd6868bd2febef657c26d3c7 ""
+  "AntAlgReport-Titov-AI.aux" 1561855135 14600 f2b3ec0335f4570bc1f3e9042b95c4ba ""
+  "AntAlgReport-Titov-AI.out" 1561855135 3522 5997828a71820dd5cda6dab3d9e3b9fa ""
+  "AntAlgReport-Titov-AI.tex" 1561855130 48689 75e2d04c9b9d66292fc280104e30e96c ""
+  "AntAlgReport-Titov-AI.toc" 1561855135 4877 803b39eecd6868bd2febef657c26d3c7 ""
   "data/DS.png" 1561816374 31212 d93483c1b0c952c9eac9545b5ba17d57 ""
   "data/code/ant.py" 1561671483 4005 df0d03f95fd888362a9aba6c48a4643e ""
   "data/code/graph.py" 1560453039 9092 9ccf11b6a3e7e1beb97ac055eafc10e4 ""
@@ -278,8 +278,8 @@
   "data/tex_tables/plan_time/500x500.tex" 1561768221 696 aad104831dbc5a5703b015556dd75c06 ""
   "data/tex_tables/plan_time/50x50.tex" 1561768221 694 ac72661839ebee0f2f8dc6a66cede4bd ""
   (generated)
-  "AntAlgReport-Titov-AI.log"
-  "AntAlgReport-Titov-AI.aux"
   "AntAlgReport-Titov-AI.toc"
   "AntAlgReport-Titov-AI.out"
+  "AntAlgReport-Titov-AI.log"
+  "AntAlgReport-Titov-AI.aux"
   "AntAlgReport-Titov-AI.pdf"
