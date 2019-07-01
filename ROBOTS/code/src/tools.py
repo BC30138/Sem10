@@ -61,7 +61,7 @@ def plot_surface(matrix, sizes, targets_numbers, file_name):
     (x, y) = np.meshgrid(np.arange(matrix.shape[1]), np.arange(matrix.shape[0]))
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    surf = ax.plot_surface(x, y, np.log(matrix), cmap=plt.get_cmap("viridis"))
+    surf = ax.plot_surface(x, y, matrix, cmap=plt.get_cmap("viridis"))
     ax.set_xlabel('Targets', labelpad=20)
     ax.set_ylabel('Map size', labelpad=20)
     ax.set_zlabel('ln(t)', labelpad=10)

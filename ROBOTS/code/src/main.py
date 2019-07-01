@@ -114,10 +114,6 @@ def single_path_test():
         file.write(caption + ":\t" + str(cost) + "\n")
     file.close()
 
-
-
-
-
 def time_correlation():
     """plot surface with mean times by ready data"""
     sizes = (25, 50, 100, 250, 500, 1000)
@@ -125,8 +121,8 @@ def time_correlation():
     plot_time_correlation(sizes, targets_numbers)
     generate_tables(sizes, targets_numbers)
 
-single_path_test()
+# single_path_test()
 # examples_of_data()
 # dev_test()
 # main_test()
-# time_correlation()
+time_correlation()

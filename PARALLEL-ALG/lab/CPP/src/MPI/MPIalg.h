@@ -7,7 +7,7 @@ class MPIalg : public TridiagonalSLE{
   public:
     MPIalg(): TridiagonalSLE() {}
     MPIalg(unsigned long len_of_middle):  TridiagonalSLE(len_of_middle) { }
-    void solve(int thread_num);
+    void solve(bool compare_test, ostream &out);
     ~MPIalg() {
       a.clear();
       b.clear();

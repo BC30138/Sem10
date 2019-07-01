@@ -3,81 +3,102 @@
 #include <mpi.h>
 #include <vector>
 #include <math.h>
+#include<ctime>
 #include"MPIalg.h"
 #include"functions.h"
 using namespace std;
 
-void MPIalg::solve(int thread_num) {
+void MPIalg::solve(bool compare_test, ostream &out) {
+    int thread;
+    int thread_num;
+
+    vector<double> a_temp(n);
+    vector<double> d_temp(n);
+    unsigned long long k;
+    unsigned long long last_thread_dif;
+
     MPI_Init(NULL, NULL);
-    int rank;
-    int world;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &world);
-    printf("Hello: rank %d, world: %d\n",rank, world);
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &thread);
+    MPI_Comm_size(MPI_COMM_WORLD, &thread_num);
+
+    vector<double> b_bound(thread_num - 1);
+    vector<double> a_bound(thread_num);
+    vector<double> c_bound(thread_num - 1);
+    vector<double> d_bound(thread_num);
+    vector<double> x_bound;
+    x_bound.resize(thread_num);
+
+    clock_t start;
+    if (thread == 0) {
+        if (compare_test) {
+            start = clock();
+        }
+        k = floor(double(n) / double(thread_num));
+        last_thread_dif = n % k;
+    }
+
+    MPI_Bcast(&k, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&last_thread_dif, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+
+    cout << last_thread_dif << endl;
+
+    unsigned long long row_num;
+    if (thread != thread_num - 1) row_num = k;
+    else row_num = k + last_thread_dif;
+    unsigned long long row_start = thread * k;
+    unsigned long long  row_end = row_start + row_num;
+
+    bool first_thread = false;
+    bool last_thread = false;
+
+    if (thread == 0) first_thread = true;
+    else if (thread == thread_num - 1) last_thread = true;
+
+    vector<double> b_thread;
+    vector<double> a_thread;
+    vector<double> c_thread;
+    vector<double> f_thread;
+    vector<double> g_thread;
+    vector<double> d_thread;
+    vector<double> x_thread;
+
+    x_thread.resize(row_num);
+
+    if (first_thread) {
+        b_thread = get_subvector(b, row_start, row_end - 1);
+        b_thread.insert(b_thread.begin(), 0);
+    }
+    else {
+        b_thread = get_subvector(b, row_start - 1, row_end - 1);
+        f_thread.resize(row_num);
+    }
+    g_thread.resize(row_num);
+    a_thread = get_subvector(a, row_start, row_end);
+    d_thread = get_subvector(d, row_start, row_end);
+    if (last_thread) {
+        c_thread = get_subvector(c, row_start, row_end - 1);
+    }
+    else c_thread = get_subvector(c, row_start, row_end);
+
+    double tmp;
+    if (!first_thread) f_thread[0] = b_thread[0];
+    for (unsigned long long r_it = 1; r_it < row_num; r_it++) {
+        tmp = b_thread[r_it] / a_thread[r_it - 1];
+        a_thread[r_it] = a_thread[r_it] - c_thread[r_it - 1] * tmp;
+        d_thread[r_it] = d_thread[r_it] - d_thread[r_it - 1] * tmp;
+        if (!first_thread) f_thread[r_it] = - f_thread[r_it - 1] * tmp;
+    }
     MPI_Finalize();
 
-    // vector<double> a_temp(n);
-    // vector<double> d_temp(n);
-    // unsigned long long k = floor(double(n) / double(thread_num));
-    // unsigned long long last_thread_dif = n % k;
+    if (thread == 0) {
+        if (compare_test) {
+            out << thread_num << "\t" << (clock() - start) / (double)CLOCKS_PER_SEC << endl;
+        }
+    }
 
-    // vector<double> b_bound(thread_num - 1);
-    // vector<double> a_bound(thread_num);
-    // vector<double> c_bound(thread_num - 1);
-    // vector<double> d_bound(thread_num);
-    // vector<double> x_bound;
-    // x_bound.resize(thread_num);
 
-    // #pragma omp parallel num_threads(thread_num)
-    // {
-    //     int thread = omp_get_thread_num();
-    //     unsigned long long row_num;
-    //     if (thread != thread_num - 1) row_num = k;
-    //     else row_num = k + last_thread_dif;
 
-    //     unsigned long long row_start = thread * k;
-    //     unsigned long long  row_end = row_start + row_num;
-
-    //     bool first_thread = false;
-    //     bool last_thread = false;
-
-    //     if (thread == 0) first_thread = true;
-    //     else if (thread == thread_num - 1) last_thread = true;
-
-    //     vector<double> b_thread;
-    //     vector<double> a_thread;
-    //     vector<double> c_thread;
-    //     vector<double> f_thread;
-    //     vector<double> g_thread;
-    //     vector<double> d_thread;
-    //     vector<double> x_thread;
-
-    //     x_thread.resize(row_num);
-
-    //     if (first_thread) {
-    //         b_thread = get_subvector(b, row_start, row_end - 1);
-    //         b_thread.insert(b_thread.begin(), 0);
-    //     }
-    //     else {
-    //         b_thread = get_subvector(b, row_start - 1, row_end - 1);
-    //         f_thread.resize(row_num);
-    //     }
-    //     g_thread.resize(row_num);
-    //     a_thread = get_subvector(a, row_start, row_end);
-    //     d_thread = get_subvector(d, row_start, row_end);
-    //     if (last_thread) {
-    //         c_thread = get_subvector(c, row_start, row_end - 1);
-    //     }
-    //     else c_thread = get_subvector(c, row_start, row_end);
-
-    //     double tmp;
-    //     if (!first_thread) f_thread[0] = b_thread[0];
-    //     for (unsigned long long r_it = 1; r_it < row_num; r_it++) {
-    //         tmp = b_thread[r_it] / a_thread[r_it - 1];
-    //         a_thread[r_it] = a_thread[r_it] - c_thread[r_it - 1] * tmp;
-    //         d_thread[r_it] = d_thread[r_it] - d_thread[r_it - 1] * tmp;
-    //         if (!first_thread) f_thread[r_it] = - f_thread[r_it - 1] * tmp;
-    //     }
 
     //     #pragma omp critical
     //     {

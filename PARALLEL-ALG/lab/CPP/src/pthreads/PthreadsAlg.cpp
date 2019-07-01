@@ -35,22 +35,22 @@ pthread_mutex_t mutex_4;
 void *thread_func(void *thread_id) {
     // struct arg_struct *args = (struct arg_struct *)arguments;
 
-    int thread = (int)thread_id;
+    int thread = *((int*)(&thread_id));
 
     unsigned long long row_num;
     if (thread != thread_num - 1) row_num = k;
     else row_num = k + last_thread_dif;
 
     unsigned long long row_start = thread * k;
-    unsigned long long  row_end = row_start + row_num; 
+    unsigned long long  row_end = row_start + row_num;
 
     bool first_thread = false;
     bool last_thread = false;
-    
+
     if (thread == 0) first_thread = true;
     else if (thread == thread_num - 1) last_thread = true;
 
-    vector<double> b_thread; 
+    vector<double> b_thread;
     vector<double> a_thread;
     vector<double> c_thread;
     vector<double> f_thread;
@@ -76,8 +76,8 @@ void *thread_func(void *thread_id) {
     }
     else c_thread = get_subvector(*c_global, row_start, row_end);
 
-    double tmp; 
-    if (!first_thread) f_thread[0] = b_thread[0];  
+    double tmp;
+    if (!first_thread) f_thread[0] = b_thread[0];
     for (unsigned long long r_it = 1; r_it < row_num; r_it++) {
         tmp = b_thread[r_it] / a_thread[r_it - 1];
         a_thread[r_it] = a_thread[r_it] - c_thread[r_it - 1] * tmp;
@@ -107,7 +107,7 @@ void *thread_func(void *thread_id) {
             tmp = c_global[0][row_start - 1] / a_thread[0];
             g_thread[0] = g_thread[0] - g_thread[1] * tmp;
             d_temp[row_start - 1] = d_temp[row_start - 1] - d_thread[0] * tmp;
-            a_temp[row_start - 1] = a_temp[row_start - 1] - f_thread[0] * tmp; 
+            a_temp[row_start - 1] = a_temp[row_start - 1] - f_thread[0] * tmp;
         pthread_mutex_unlock(&mutex_2);
     }
 
@@ -118,7 +118,7 @@ void *thread_func(void *thread_id) {
         d_thread[row_num - 1] = d_temp[row_end - 1];
     }
 
-    if (thread_num == 1) {   
+    if (thread_num == 1) {
         x_bound[0] = d_thread[row_num - 1] / a_thread[row_num - 1];
     }
     else {
@@ -134,7 +134,7 @@ void *thread_func(void *thread_id) {
             d_bound[thread] = d_thread[row_num - 1];
         }
         pthread_mutex_unlock(&mutex_3);
-        
+
         pthread_barrier_wait(&barrier);
 
         if (thread == 0) {
