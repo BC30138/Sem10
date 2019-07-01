@@ -6,6 +6,19 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from mpl_toolkits.mplot3d import Axes3D
 
+def plot_line(x_captions, y, x_label, y_label, file_path):
+    """plot line"""
+    rcParams.update({'font.size': 16})
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(range(len(y)), y, '-ro', linewidth=2.0)
+    ax.set_xlabel(x_label, labelpad=20)
+    ax.set_ylabel(y_label, labelpad=20)
+    plt.xticks(range(len(x_captions)), x_captions)
+    fig.set_size_inches(12.5, 8.5)
+    fig.savefig(file_path, dpi=100)
+    plt.close(fig)
+
 def generate_tables(sizes, targets_numbers):
     for it, _ in enumerate(sizes):
         matrix_ant = np.zeros((11, len(targets_numbers)))
@@ -64,7 +77,7 @@ def plot_surface(matrix, sizes, targets_numbers, file_name):
     surf = ax.plot_surface(x, y, matrix, cmap=plt.get_cmap("viridis"))
     ax.set_xlabel('Targets', labelpad=20)
     ax.set_ylabel('Map size', labelpad=20)
-    ax.set_zlabel('ln(t)', labelpad=10)
+    ax.set_zlabel('t (s.)', labelpad=10)
     plt.xticks(range(len(targets_numbers)), targets_numbers)
     plt.yticks(range(len(sizes)), sizes)
     fig.colorbar(surf)

@@ -1,5 +1,6 @@
 """main file"""
 import progressbar
+from time import time
 from tools import plot_map
 from tools import plot_paths
 from tools import plot_heuristic_d
@@ -7,9 +8,11 @@ from tools import plot_pheromone
 from tools import plot_time_correlation
 from tools import generate_tables
 from tools import plot_path
+from tools import plot_line
 from graph import Graph
 from ant import EAlg
 from planning import planning
+
 
 EALG_OBJ = EAlg(
     50,
@@ -84,6 +87,23 @@ def examples_of_data():
         plot_pheromone(graph, "data/heuristics_example/pheromone_" + caption + ".png")
         # plot_map(graph, "data/maps_example/" + caption + ".png")
 
+def one_path_time():
+    """plot path finding time correlation of map size"""
+    sizes = [25, 50, 100, 250, 500, 1000]
+    start_points = [[18, 2], [36, 4], [72, 8], [180, 20], [360, 40], [720, 80]]
+    end_points = [[2, 18], [4, 36], [8, 72], [20, 180], [40, 360], [80, 720]]
+    time_ = []
+    captions = []
+    for it, _ in enumerate(sizes):
+        graph = Graph(sizes[it], sizes[it], 0.3, 0.2)
+        graph.generate()
+        start_t = time()
+        _, _ = EALG_OBJ.get_path(graph, start_points[it], end_points[it])
+        time_.append(round((time() - start_t), 3))
+        captions.append(str(sizes[it]) + "x" + str(sizes[it]))
+    plot_line(captions, time_, 'Map size', 't (s.)', 'data/time/path_time.png')
+
+
 def dev_test():
     """Function for development \n
         I use it for testing components"""
@@ -125,4 +145,5 @@ def time_correlation():
 # examples_of_data()
 # dev_test()
 # main_test()
-time_correlation()
+# time_correlation()
+one_path_time()
