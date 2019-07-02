@@ -2,7 +2,6 @@ from mpi4py import MPI
 import numpy as np
 import math
 from time import time
-import random
 
 def ThomasAlg(b, a, c, d):
     n = np.int64(len(d))

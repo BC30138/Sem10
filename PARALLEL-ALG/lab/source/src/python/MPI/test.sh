@@ -1,14 +1,14 @@
 #!/bin/bash
 
-filename="data/MPItime.data"
+filename="data/MPIPythonTime.data"
 rm -f $filename
 touch $filename
-threadnum=8
+start=1
 step=1
+threadnum=24
 . data/MPIparams.data
 echo "size: $size\nthreads_num	time(s)" >> $filename
-mpiexec -np 1 app/MPIlab.out
-for threadit in `seq 2 $step $threadnum`
+for threadit in `seq $start $step $threadnum`
 do
-    mpiexec -np $threadit app/MPIlab.out
+    mpiexec -np $threadit python3 src/python/MPI/main.py
 done

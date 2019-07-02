@@ -14,6 +14,7 @@ unsigned long get_size() {
     tmp.erase(0, pos + 1);
     return strtoul(tmp.c_str(), NULL, 0);
 }
+
 void test_1(unsigned long n) {
     MPIalg test(n);
     ofstream out("data/MPItime.data", fstream::app);
@@ -29,7 +30,7 @@ void test_2() {
 
 int main() {
     unsigned long n = get_size();
-    // test_1(n);
-    test_2();
+    test_1(n);
+    // test_2();
     return 0;
 }
