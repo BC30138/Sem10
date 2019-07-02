@@ -20,20 +20,20 @@ MPIEXECUTABLE=app/MPIlab.out
 $(OPENMPOBJECTS): CC := mpic++
 MPIRUNNER=mpiexec
 
-define mpi_task =
-	filename="data/MPItime.data"
-	rm -f $filename
-	touch $filename
-	threadnum=8
-	step=1
-	. src/MPI/MPIparams.data
-	echo "size: $size\nthreads_num	time(s)" >> $filename
-	mpiexec -np 1 app/MPIlab.out
-	for threadit in `seq 2 $step $threadnum`
-	do
-		mpiexec -np $threadit app/MPIlab.out
-	done
-endef
+# define mpi_task =
+# 	filename="data/MPItime.data"
+# 	rm -f $filename
+# 	touch $filename
+# 	threadnum=8
+# 	step=1
+# 	. src/MPI/MPIparams.data
+# 	echo "size: $size\nthreads_num	time(s)" >> $filename
+# 	mpiexec -np 1 app/MPIlab.out
+# 	for threadit in `seq 2 $step $threadnum`
+# 	do
+# 		mpiexec -np $threadit app/MPIlab.out
+# 	done
+# endef
 
 OPENMPSOURCES=src/openmp/MainOpenMP.cpp
 OPENMPSOURCES+=src/openmp/OpenMPalg.cpp
@@ -57,9 +57,13 @@ MPI: $(MPISOURCES) $(MPIEXECUTABLE)
 $(MPIEXECUTABLE): $(MPIOBJECTS)
 	$(MPIC) $(LDFLAGS) $(MPIOBJECTS) -o $@
 
-MPIrun_compare: ; $(value mpi_task)
+# MPIrunCompare: ; $(value mpi_task)
 
-.ONESHELL:
+# .PHONY: all test clean
+# .ONESHELL:
+
+MPIrunCompare:
+	src/MPI/test.sh
 
 MPIrun:
 	$(MPIRUNNER) -np 3 $(MPIEXECUTABLE)

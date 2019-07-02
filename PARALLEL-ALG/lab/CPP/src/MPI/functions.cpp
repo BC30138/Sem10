@@ -11,6 +11,13 @@ void print_vector(vector<double> vec, ostream& out) {
     out << "\n";
 }
 
+void print_vector(vector<int> vec, ostream& out) {
+    out << setprecision(2) << fixed;
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+        out << *it << ' ';
+    out << "\n";
+}
+
 vector<double> string_to_d_vector(string str) {
     istringstream ss(str);
     vector<double> res;

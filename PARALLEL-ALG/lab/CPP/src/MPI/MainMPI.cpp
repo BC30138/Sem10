@@ -25,12 +25,11 @@ void test_2() {
     MPIalg test;
     test.read_data("data/test_matrix.data");
     test.solve(false, cout);
-    // test.show_result();
 }
 
 int main() {
     unsigned long n = get_size();
-    // test_1(n);
-    test_2();
+    test_1(n);
+    // test_2();
     return 0;
 }
