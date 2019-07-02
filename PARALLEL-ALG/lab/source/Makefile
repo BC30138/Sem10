@@ -65,6 +65,9 @@ $(MPIEXECUTABLE): $(MPIOBJECTS)
 MPIrunCompare:
 	src/MPI/test.sh
 
+MPIPyrunCompare:
+	src/python/MPI/test.sh
+
 MPIrun:
 	$(MPIRUNNER) -np 3 $(MPIEXECUTABLE)
 
@@ -82,7 +85,7 @@ check:
 	python3 src/python/check.py
 
 MPIpython:
-	python3 src/python/MPI/main.py
+	mpiexec -n 3 python3 src/python/MPI/main.py
 
 .cpp.o:
 	$(if $(findstring $<,$(MPISOURCES)),$(MPIC) $(CFLAGS) $< -c -o $@, $(CC) $(CFLAGS) $< -c -o $@)
