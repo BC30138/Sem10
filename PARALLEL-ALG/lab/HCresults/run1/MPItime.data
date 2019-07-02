@@ -1,4 +1,5 @@
-size: 3500000\nthreads_num	time(s)
+size: 3500000
+threads_num	time(s)
 1	0.83
 2	0.69
 3	0.65

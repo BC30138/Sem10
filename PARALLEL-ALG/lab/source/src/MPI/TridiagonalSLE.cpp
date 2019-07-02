@@ -32,7 +32,7 @@ void TridiagonalSLE::generate_random_SLE(unsigned long len_of_middle) {
     x.resize(n);
 
     uniform_real_distribution<double> unif(lower_bound,upper_bound);
-    default_random_engine re;
+    default_random_engine re(0);
 
     a[0] = unif(re);
     d[0] = unif(re);
